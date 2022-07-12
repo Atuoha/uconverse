@@ -1,3 +1,4 @@
+import 'auth/auth.dart';
 import 'providers/providers.dart';
 import 'screens/chat_screen.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +37,8 @@ class Uconverse extends StatelessWidget {
         home: const SplashScreen(),
         routes:  {
           ChatScreen.routeName:(context) => const ChatScreen(),
-          HomeScreen.routeName:(context) => const HomeScreen()
+          HomeScreen.routeName:(context) => const HomeScreen(),
+          Auth.routeName:(context) => const Auth(),
         },
       ),
     );

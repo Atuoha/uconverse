@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-
+import 'package:uconverse/auth/auth.dart';
 import '../constants/color.dart';
-import '../screens/home_screen.dart';
 
 class SplashContainer extends StatelessWidget {
   final String title;
@@ -65,7 +64,7 @@ class SplashContainer extends StatelessWidget {
                     style: TextStyle(color: Colors.white),
                   ),
                   onPressed: () => Navigator.of(context).pushNamed(
-                    HomeScreen.routeName,
+                    Auth.routeName,
                   ),
                 )
               : const Text('')
