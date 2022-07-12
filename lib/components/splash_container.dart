@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:uconverse/auth/auth.dart';
+import '/auth/auth_screen.dart';
 import '../constants/color.dart';
 
 class SplashContainer extends StatelessWidget {
@@ -64,7 +64,7 @@ class SplashContainer extends StatelessWidget {
                     style: TextStyle(color: Colors.white),
                   ),
                   onPressed: () => Navigator.of(context).pushNamed(
-                    Auth.routeName,
+                    AuthScreen.routeName,
                   ),
                 )
               : const Text('')

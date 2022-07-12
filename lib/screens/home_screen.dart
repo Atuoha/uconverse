@@ -3,6 +3,7 @@ import '../widgets/home_chats.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../widgets/category_container.dart';
+import 'profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/home';
@@ -35,8 +36,8 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         leading: Image.asset('assets/images/uconverse.png'),
-        actions: const [
-          IconButton(
+        actions: [
+          const IconButton(
             onPressed: null,
             icon: Icon(
               Icons.search,
@@ -45,8 +46,33 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(right:8.0),
-            child: Icon(Icons.more_vert),
+            padding: const EdgeInsets.only(right: 8.0),
+            child: PopupMenuButton(
+              itemBuilder: (context) => [
+                PopupMenuItem(
+                  onTap: () =>
+                      Navigator.of(context).pushNamed(ProfileScreen.routeName),
+                  child: Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: const [
+                      Icon(Icons.account_circle, color:Colors.black),
+                      SizedBox(width: 5),
+                      Text('Profile'),
+                    ],
+                  ),
+                ),
+                PopupMenuItem(
+                  child: Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: const [
+                      Icon(Icons.settings, color:Colors.black),
+                      SizedBox(width: 5),
+                      Text('Settings'),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           )
         ],
       ),

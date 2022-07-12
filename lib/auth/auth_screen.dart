@@ -3,22 +3,22 @@ import 'package:flutter/services.dart';
 import 'package:uconverse/constants/color.dart';
 import '../screens/home_screen.dart';
 
-class Auth extends StatefulWidget {
-  static const routeName = 'auth';
-  const Auth({Key? key}) : super(key: key);
+class AuthScreen extends StatefulWidget {
+  static const routeName = 'AuthScreen';
+  const AuthScreen({Key? key}) : super(key: key);
 
   @override
-  State<Auth> createState() => _AuthState();
+  State<AuthScreen> createState() => _AuthScreenState();
 }
 
-class _AuthState extends State<Auth> {
+class _AuthScreenState extends State<AuthScreen> {
   var emailController = TextEditingController();
   var usernameController = TextEditingController();
   var passwordController = TextEditingController();
   var _obscure = true;
   bool isSignIn = true;
 
-  void auth(
+  void AuthScreen(
     String email,
     String username,
     String password,
@@ -214,7 +214,7 @@ class _AuthState extends State<Auth> {
                         ),
                         const SizedBox(height: 20),
                         GestureDetector(
-                          onTap: () => auth(
+                          onTap: () => AuthScreen(
                             emailController.text,
                             usernameController.text,
                             passwordController.text,
