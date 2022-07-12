@@ -15,8 +15,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-
-
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
@@ -31,19 +29,12 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text(
           'Uconverse',
           style: TextStyle(
-            fontSize: 27,
+            fontSize: 30,
             color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
         ),
-        leading: const IconButton(
-          icon: Icon(
-            Icons.sort,
-            size: 30,
-            color: Colors.white,
-          ),
-          onPressed: null,
-        ),
+        leading: Image.asset('assets/images/uconverse.png'),
         actions: const [
           IconButton(
             onPressed: null,
@@ -52,6 +43,10 @@ class _HomeScreenState extends State<HomeScreen> {
               size: 30,
               color: Colors.white,
             ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(right:8.0),
+            child: Icon(Icons.more_vert),
           )
         ],
       ),
@@ -68,10 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               child: Column(
-                children: const[
-                  FavoriteContacts(),
-                  HomeChats()
-                ],
+                children: const [FavoriteContacts(), HomeChats()],
               ),
             ),
           )

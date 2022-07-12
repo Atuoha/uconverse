@@ -34,7 +34,7 @@ class SenderChat extends StatelessWidget {
               Text(
               message.time,
                 style: const TextStyle(
-                  color: Colors.grey,
+                  color: Colors.white,
                   fontSize: 12,
                 ),
               ),
@@ -46,7 +46,7 @@ class SenderChat extends StatelessWidget {
                 child: Text(
                 message.text,
                   style: const TextStyle(
-                    color: Colors.blueGrey,
+                    color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

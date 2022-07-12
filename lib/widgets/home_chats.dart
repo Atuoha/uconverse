@@ -1,3 +1,4 @@
+import '../constants/color.dart';
 import '../screens/chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -76,8 +77,8 @@ class HomeChats extends StatelessWidget {
                                     .name,
                                 style: const TextStyle(
                                   fontSize: 15,
-                                  color: Color.fromARGB(255, 196, 195, 195),
-                                  fontWeight: FontWeight.bold,
+                                  color: primaryColor,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
                               const SizedBox(height: 5),
@@ -113,7 +114,7 @@ class HomeChats extends StatelessWidget {
                                   height: 20,
                                   width: 40,
                                   decoration: BoxDecoration(
-                                    color: Theme.of(context).primaryColor,
+                                    color: buttonColor,
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: const Center(

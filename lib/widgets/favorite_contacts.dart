@@ -20,12 +20,12 @@ class FavoriteContacts extends StatelessWidget {
                 'Favorite contacts',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: Colors.grey,
+                  color: Colors.white,
                 ),
               ),
               Icon(
                 Icons.more_horiz,
-                color: Colors.grey,
+                color: Colors.white,
               )
             ],
           ),

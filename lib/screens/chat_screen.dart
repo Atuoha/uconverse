@@ -50,7 +50,6 @@ class ChatScreen extends StatelessWidget {
                   blurStyle: BlurStyle.inner,
                   blurRadius: 20.0,
                   spreadRadius: 7,
-                  // offset: Offset.fromDirection(direction)
                 )
               ],
             ),
