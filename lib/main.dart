@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'constants/color.dart';
 import 'screens/home_screen.dart';
+import 'screens/splash_screen.dart';
 
 void main() => runApp(const Uconverse());
 
@@ -32,9 +33,10 @@ class Uconverse extends StatelessWidget {
           ),
         ),
         debugShowCheckedModeBanner: false,
-        home: const HomeScreen(),
+        home: const SplashScreen(),
         routes:  {
-          ChatScreen.routeName:(context) => const ChatScreen()
+          ChatScreen.routeName:(context) => const ChatScreen(),
+          HomeScreen.routeName:(context) => const HomeScreen()
         },
       ),
     );

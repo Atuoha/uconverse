@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import '../widgets/category_container.dart';
 
 class HomeScreen extends StatefulWidget {
+  static const routeName = '/home';
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
