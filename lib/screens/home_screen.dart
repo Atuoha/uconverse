@@ -38,51 +38,21 @@ class _HomeScreenState extends State<HomeScreen> {
           'assets/images/uconverse.png',
         ),
         actions: [
-           IconButton(
-            onPressed: ()=>Navigator.of(context).pushNamed(
-                    ProfileScreen.routeName,
-                  ),
-            icon: Icon(
+          const IconButton(
+            onPressed: null,
+            icon:  Icon(
               Icons.search,
               size: 30,
               color: Colors.white,
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: PopupMenuButton(
-              itemBuilder: (context) => [
-                PopupMenuItem(
-                  onTap: () => Navigator.of(context).pushNamed(
-                    ProfileScreen.routeName,
-                  ),
-                  child: Wrap(
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: const [
-                      Icon(
-                        Icons.account_circle,
-                        color: Colors.black,
-                      ),
-                      SizedBox(width: 5),
-                      Text('Profile'),
-                    ],
-                  ),
-                ),
-                PopupMenuItem(
-                  onTap: () {},
-                  child: Wrap(
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: const [
-                      Icon(
-                        Icons.settings,
-                        color: Colors.black,
-                      ),
-                      SizedBox(width: 5),
-                      Text('Settings'),
-                    ],
-                  ),
-                ),
-              ],
+            padding: const EdgeInsets.only(right: 20.0),
+            child: GestureDetector(
+              onTap: () => Navigator.of(context).pushNamed(
+                ProfileScreen.routeName,
+              ),
+              child: Image.asset('assets/images/default.png', width: 40,),
             ),
           )
         ],
