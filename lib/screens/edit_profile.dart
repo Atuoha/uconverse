@@ -27,6 +27,58 @@ class _EditProfileState extends State<EditProfile> {
         statusBarColor: Colors.transparent,
       ),
     );
+
+    Future avatarSource() {
+      return showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Center(
+            child: Text(
+              'Select Avatar Source',
+              style: TextStyle(
+                color: primaryColor,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          actions: [
+            ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                primary: accentColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              onPressed: () {},
+              label: const Text(
+                'From Camera',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+              icon: const Icon(Icons.camera),
+            ),
+            ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                primary: accentColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              onPressed: () {},
+              label: const Text(
+                'From Gallery',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+              icon: const Icon(Icons.photo),
+            ),
+          ],
+        ),
+      );
+    }
+
     return Scaffold(
       // extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -75,6 +127,22 @@ class _EditProfileState extends State<EditProfile> {
                   'assets/images/default.png',
                   fit: BoxFit.cover,
                 ),
+              ),
+              ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  primary: accentColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                onPressed: avatarSource,
+                label: const Text(
+                  'Change Avatar',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+                icon: const Icon(Icons.camera),
               ),
               Form(
                 // key:,
