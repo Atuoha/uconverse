@@ -1,3 +1,5 @@
+import 'package:uconverse/screens/edit_profile.dart';
+
 import 'auth/auth_screen.dart';
 import 'providers/providers.dart';
 import 'screens/chat_screen.dart';
@@ -41,6 +43,7 @@ class Uconverse extends StatelessWidget {
           HomeScreen.routeName:(context) => const HomeScreen(),
           AuthScreen.routeName:(context) => const AuthScreen(),
           ProfileScreen.routeName:(context) => const ProfileScreen(),
+          EditProfile.routeName:(context) => const EditProfile(),
         },
       ),
     );

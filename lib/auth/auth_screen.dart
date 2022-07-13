@@ -169,7 +169,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                 ),
                               )
                             : const Text(''),
-                        SizedBox(height: isSignIn ? 20 : 0),
+                        SizedBox(height: isSignIn ? 0 : 20),
                         TextFormField(
                           textInputAction: TextInputAction.next,
                           autofocus: true,

@@ -23,7 +23,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
-      // extendBodyBehindAppBar: true,
       appBar: AppBar(
         elevation: 0,
         centerTitle: true,
@@ -35,10 +34,14 @@ class _HomeScreenState extends State<HomeScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        leading: Image.asset('assets/images/uconverse.png'),
+        leading: Image.asset(
+          'assets/images/uconverse.png',
+        ),
         actions: [
-          const IconButton(
-            onPressed: null,
+           IconButton(
+            onPressed: ()=>Navigator.of(context).pushNamed(
+                    ProfileScreen.routeName,
+                  ),
             icon: Icon(
               Icons.search,
               size: 30,
@@ -50,22 +53,30 @@ class _HomeScreenState extends State<HomeScreen> {
             child: PopupMenuButton(
               itemBuilder: (context) => [
                 PopupMenuItem(
-                  onTap: () =>
-                      Navigator.of(context).pushNamed(ProfileScreen.routeName),
+                  onTap: () => Navigator.of(context).pushNamed(
+                    ProfileScreen.routeName,
+                  ),
                   child: Wrap(
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: const [
-                      Icon(Icons.account_circle, color:Colors.black),
+                      Icon(
+                        Icons.account_circle,
+                        color: Colors.black,
+                      ),
                       SizedBox(width: 5),
                       Text('Profile'),
                     ],
                   ),
                 ),
                 PopupMenuItem(
+                  onTap: () {},
                   child: Wrap(
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: const [
-                      Icon(Icons.settings, color:Colors.black),
+                      Icon(
+                        Icons.settings,
+                        color: Colors.black,
+                      ),
                       SizedBox(width: 5),
                       Text('Settings'),
                     ],
@@ -89,7 +100,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               child: Column(
-                children: const [FavoriteContacts(), HomeChats()],
+                children: const [
+                  FavoriteContacts(),
+                  HomeChats(),
+                ],
               ),
             ),
           )
