@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "167947904654",
+    "project_id": "uconverse-c940b",
+    "storage_bucket": "uconverse-c940b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:167947904654:android:5d87d28e385e4e25268bdf",
+        "android_client_info": {
+          "package_name": "com.example.uconverse"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "167947904654-at5aj32pjsbo90iak7gtco4sufbu4kfm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDvXZV0RAr5Vz00i3zRv8xlY5XpG5np9-A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "167947904654-at5aj32pjsbo90iak7gtco4sufbu4kfm.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "167947904654-jtaaqsq65rutqpgkeag17mh7ac1gllgm.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.uconverse"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

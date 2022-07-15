@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import '../models/models.dart';
 
 class SenderChat extends StatelessWidget {
-  final Message message;
+  final String message;
+  final String time;
 
   const SenderChat({
     Key? key,
     required this.message,
+    required this.time,
   }) : super(key: key);
 
   @override
@@ -31,8 +33,8 @@ class SenderChat extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-              message.time,
+               Text(
+             time,
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 12,
@@ -44,7 +46,7 @@ class SenderChat extends StatelessWidget {
               SizedBox(
                 width: MediaQuery.of(context).size.width * 0.60,
                 child: Text(
-                message.text,
+                message,
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,

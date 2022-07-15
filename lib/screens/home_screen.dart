@@ -1,9 +1,13 @@
+import 'package:flutter/foundation.dart';
+
+import '/constants/color.dart';
 import '../widgets/favorite_contacts.dart';
 import '../widgets/home_chats.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../widgets/category_container.dart';
 import 'profile_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/home';
@@ -22,6 +26,16 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: accentColor,
+        onPressed: () {
+          // Navigator.of(context).
+        },
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
+      ),
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
         elevation: 0,
@@ -40,7 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           const IconButton(
             onPressed: null,
-            icon:  Icon(
+            icon: Icon(
               Icons.search,
               size: 30,
               color: Colors.white,
@@ -52,7 +66,10 @@ class _HomeScreenState extends State<HomeScreen> {
               onTap: () => Navigator.of(context).pushNamed(
                 ProfileScreen.routeName,
               ),
-              child: Image.asset('assets/images/default.png', width: 40,),
+              child: Image.asset(
+                'assets/images/default.png',
+                width: 40,
+              ),
             ),
           )
         ],

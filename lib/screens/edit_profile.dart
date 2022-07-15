@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:uconverse/constants/color.dart';
@@ -117,8 +116,8 @@ class _EditProfileState extends State<EditProfile> {
               Container(
                 height: 120,
                 width: 120,
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade300,
+                decoration: const BoxDecoration(
+                  color: Colors.white,
                   shape: BoxShape.circle,
                 ),
                 child:

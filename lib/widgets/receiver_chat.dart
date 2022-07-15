@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import '../models/models.dart';
 
 class ReceiverChat extends StatelessWidget {
-  final Message message;
+  final String message;
+  final String time;
 
   const ReceiverChat({
     Key? key,
     required this.message,
+    required this.time,
   }) : super(key: key);
 
   @override
@@ -36,8 +38,8 @@ class ReceiverChat extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    message.time,
+                   Text(
+                   time,
                     style: const TextStyle(
                       color: Colors.grey,
                       fontSize: 12,
@@ -49,7 +51,7 @@ class ReceiverChat extends StatelessWidget {
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.60,
                     child: Text(
-                      message.text,
+                      message,
                       style: const TextStyle(
                         color: Colors.blueGrey,
                         fontWeight: FontWeight.bold,
@@ -63,10 +65,10 @@ class ReceiverChat extends StatelessWidget {
           const SizedBox(
             width: 15,
           ),
-          Icon(
-            message.isLiked ? Icons.favorite : Icons.favorite_border,
-            color: message.isLiked ? Colors.red : Colors.grey,
-          )
+          // Icon(
+          //   message.isLiked ? Icons.favorite : Icons.favorite_border,
+          //   color: message.isLiked ? Colors.red : Colors.grey,
+          // )
         ],
       ),
     );
