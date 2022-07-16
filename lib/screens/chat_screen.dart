@@ -6,16 +6,32 @@ import '../providers/providers.dart';
 import '../widgets/receiver_chat.dart';
 import '../constants/color.dart';
 
-class ChatScreen extends StatelessWidget {
+class ChatScreen extends StatefulWidget {
   ChatScreen({Key? key}) : super(key: key);
   static const routeName = '/chat-screen';
 
-  final CollectionReference _chats =
-      FirebaseFirestore.instance.collection('chats/i9IFa7EAlYRZvzQkdUVQ/messages');
+  @override
+  State<ChatScreen> createState() => _ChatScreenState();
+}
+
+class _ChatScreenState extends State<ChatScreen> {
+  final CollectionReference _chats = FirebaseFirestore.instance
+      .collection('chats/i9IFa7EAlYRZvzQkdUVQ/messages');
+
+  var textController = TextEditingController();
+
+  void sendChat() {
+    var chat = textController.text;
+    if (chat.isNotEmpty) {
+      print(chat);
+      // _chats.doc()
+    }
+    return;
+  }
 
   @override
   Widget build(BuildContext context) {
-    var msgData = Provider.of<MessageData>(context);
+    // var msgData = Provider.of<MessageData>(context);
     var userData = Provider.of<UserData>(context);
 
     return Scaffold(
@@ -105,7 +121,6 @@ class ChatScreen extends StatelessWidget {
                   child: StreamBuilder(
                     stream: _chats.snapshots(),
                     builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-
                       if (snapshot.hasData) {
                         return ListView.builder(
                             padding: const EdgeInsets.only(top: 10),
@@ -117,7 +132,7 @@ class ChatScreen extends StatelessWidget {
                                 message: documentSnapshot['text'],
                                 time: documentSnapshot['text'],
                               );
-                            }                     
+                            }
                             //     : SenderChat(message: msgData.messages[index]),
                             );
                       }
@@ -130,30 +145,66 @@ class ChatScreen extends StatelessWidget {
                     },
                   ),
                 ),
-                Expanded(
-                  flex: 1,
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.secondary,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: const Padding(
-                          padding: EdgeInsets.only(left: 8.0),
-                          child: TextField(
-                            decoration: InputDecoration(
-                              hintText: 'Type your message here...',
-                              hintStyle: TextStyle(color: Colors.white),
-                              icon: Icon(Icons.emoji_emotions_outlined,
-                                  color: Colors.white),
-                              suffixIcon:
-                                  Icon(Icons.attach_file, color: Colors.white),
-                              enabledBorder: InputBorder.none,
-                              border: InputBorder.none,
+                SingleChildScrollView(
+                  child: Expanded(
+                    flex: 1,
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              flex: 6,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color:
+                                      Theme.of(context).colorScheme.secondary,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 8.0),
+                                  child: TextField(
+                                    style: const TextStyle(color:Colors.white, fontSize:16),
+                                    controller: textController,
+                                    decoration: const InputDecoration(
+                                      hintText: 'Type your message here...',
+                                      hintStyle: TextStyle(color: Colors.white),
+                                      icon: Icon(
+                                        Icons.emoji_emotions_outlined,
+                                        color: Colors.white,
+                                      ),
+                                      suffixIcon: Icon(
+                                        Icons.attach_file,
+                                        color: Colors.white,
+                                      ),
+                                      enabledBorder: InputBorder.none,
+                                      border: InputBorder.none,
+                                      focusedBorder: InputBorder.none,
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
+                            Expanded(
+                              flex: 1,
+                              child: CircleAvatar(
+                                backgroundColor: accentColor,
+                                child: Center(
+                                  child: IconButton(
+                                    icon: Icon(
+                                      textController.text.isEmpty
+                                          ? Icons.keyboard_voice
+                                          : Icons.send,
+                                      size: 25,
+                                      color: Colors.white,
+                                    ),
+                                    onPressed: () => sendChat(),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),

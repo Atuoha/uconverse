@@ -87,8 +87,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               child: Column(
-                children: const [
-                  FavoriteContacts(),
+                children:  [
+                  const FavoriteContacts(),
                   HomeChats(),
                 ],
               ),
