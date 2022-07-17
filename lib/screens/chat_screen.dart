@@ -23,8 +23,8 @@ class _ChatScreenState extends State<ChatScreen> {
   void sendChat() {
     var chat = textController.text;
     if (chat.isNotEmpty) {
-      print(chat);
-      // _chats.doc()
+      _chats.add({'text': chat});
+      chat = '';
     }
     return;
   }
@@ -115,97 +115,104 @@ class _ChatScreenState extends State<ChatScreen> {
               topLeft: Radius.circular(30),
             ),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
-                  flex: 7,
-                  child: StreamBuilder(
-                    stream: _chats.snapshots(),
-                    builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                      if (snapshot.hasData) {
-                        return ListView.builder(
-                            padding: const EdgeInsets.only(top: 10),
-                            itemCount: snapshot.data!.docs.length,
-                            itemBuilder: (context, index) {
-                              final DocumentSnapshot documentSnapshot =
-                                  snapshot.data!.docs[index];
-                              return ReceiverChat(
-                                message: documentSnapshot['text'],
-                                time: documentSnapshot['text'],
-                              );
-                            }
-                            //     : SenderChat(message: msgData.messages[index]),
-                            );
-                      }
+                  child: SizedBox(
+                    child: StreamBuilder(
+                      stream: _chats.snapshots(),
+                      builder:
+                          (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (snapshot.hasData) {
+                          return ListView.builder(
+                              padding: const EdgeInsets.only(top: 10),
+                              itemCount: snapshot.data!.docs.length,
+                              itemBuilder: (context, index) {
+                                final DocumentSnapshot documentSnapshot =
+                                    snapshot.data!.docs[index];
+                                return SenderChat(
+                                  message: documentSnapshot['text'],
+                                  time: documentSnapshot['text'],
+                                );
 
-                      return const Center(
-                        child: CircularProgressIndicator(
-                          color: primaryColor,
-                        ),
-                      );
-                    },
+                                // ReceiverChat(
+                                //   message: documentSnapshot['text'],
+                                //   time: documentSnapshot['text'],
+                                // );
+                              });
+                        }
+
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            color: primaryColor,
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ),
                 SingleChildScrollView(
-                  child: Expanded(
-                    flex: 1,
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              flex: 6,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color:
-                                      Theme.of(context).colorScheme.secondary,
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 8.0),
-                                  child: TextField(
-                                    style: const TextStyle(color:Colors.white, fontSize:16),
-                                    controller: textController,
-                                    decoration: const InputDecoration(
-                                      hintText: 'Type your message here...',
-                                      hintStyle: TextStyle(color: Colors.white),
-                                      icon: Icon(
-                                        Icons.emoji_emotions_outlined,
-                                        color: Colors.white,
-                                      ),
-                                      suffixIcon: Icon(
-                                        Icons.attach_file,
-                                        color: Colors.white,
-                                      ),
-                                      enabledBorder: InputBorder.none,
-                                      border: InputBorder.none,
-                                      focusedBorder: InputBorder.none,
-                                    ),
-                                  ),
-                                ),
+                  keyboardDismissBehavior:
+                      ScrollViewKeyboardDismissBehavior.manual,
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            flex: 6,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.secondary,
+                                borderRadius: BorderRadius.circular(20),
                               ),
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: CircleAvatar(
-                                backgroundColor: accentColor,
-                                child: Center(
-                                  child: IconButton(
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 8.0),
+                                child: TextField(
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                  ),
+                                  controller: textController,
+                                  decoration: const InputDecoration(
+                                    hintText: 'Type your message here...',
+                                    hintStyle: TextStyle(color: Colors.white),
                                     icon: Icon(
-                                      textController.text.isEmpty
-                                          ? Icons.keyboard_voice
-                                          : Icons.send,
-                                      size: 25,
+                                      Icons.emoji_emotions_outlined,
                                       color: Colors.white,
                                     ),
-                                    onPressed: () => sendChat(),
+                                    suffixIcon: Icon(
+                                      Icons.attach_file,
+                                      color: Colors.white,
+                                    ),
+                                    enabledBorder: InputBorder.none,
+                                    border: InputBorder.none,
+                                    focusedBorder: InputBorder.none,
                                   ),
                                 ),
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: CircleAvatar(
+                              backgroundColor: accentColor,
+                              child: Center(
+                                child: IconButton(
+                                  icon: Icon(
+                                    textController.text.isEmpty
+                                        ? Icons.keyboard_voice
+                                        : Icons.send,
+                                    size: 25,
+                                    color: Colors.white,
+                                  ),
+                                  onPressed: () => sendChat(),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
