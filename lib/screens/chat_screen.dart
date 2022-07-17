@@ -18,13 +18,22 @@ class _ChatScreenState extends State<ChatScreen> {
   final CollectionReference _chats = FirebaseFirestore.instance
       .collection('chats/i9IFa7EAlYRZvzQkdUVQ/messages');
 
-  var textController = TextEditingController();
+  final _textController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _textController.addListener(() {
+      setState(() {});
+    });
+  }
 
   void sendChat() {
-    var chat = textController.text;
+    var chat = _textController.text;
     if (chat.isNotEmpty) {
       _chats.add({'text': chat});
-      chat = '';
+      _textController.clear();
     }
     return;
   }
@@ -174,7 +183,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                     color: Colors.white,
                                     fontSize: 16,
                                   ),
-                                  controller: textController,
+                                  controller: _textController,
                                   decoration: const InputDecoration(
                                     hintText: 'Type your message here...',
                                     hintStyle: TextStyle(color: Colors.white),
@@ -201,9 +210,9 @@ class _ChatScreenState extends State<ChatScreen> {
                               child: Center(
                                 child: IconButton(
                                   icon: Icon(
-                                    textController.text.isEmpty
-                                        ? Icons.keyboard_voice
-                                        : Icons.send,
+                                    _textController.text.isNotEmpty
+                                        ? Icons.send
+                                        : Icons.keyboard_voice,
                                     size: 25,
                                     color: Colors.white,
                                   ),
