@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:uconverse/components/image_uploader.dart';
@@ -79,7 +78,12 @@ class _EditProfileState extends State<EditProfile> {
         ),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () => _updateProfile(
+              _emailController.text,
+              _usernameController.text,
+              _passwordController.text,
+              context,
+            ),
             icon: const Icon(
               Icons.check,
               color: primaryColor,
@@ -170,34 +174,6 @@ class _EditProfileState extends State<EditProfile> {
                         }
                         return null;
                       },
-                    ),
-                    const SizedBox(height: 20),
-                    GestureDetector(
-                      onTap: () => _updateProfile(
-                        _emailController.text,
-                        _usernameController.text,
-                        _passwordController.text,
-                        context,
-                      ),
-                      child: Card(
-                        color: accentColor,
-                        elevation: 2,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 10,
-                            horizontal: 80,
-                          ),
-                          child: Text(
-                            'Update Profile',
-                            style: const TextStyle(
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
                     ),
                   ],
                 ),

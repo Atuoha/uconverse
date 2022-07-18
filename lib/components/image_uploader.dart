@@ -74,7 +74,10 @@ class _ImageUploaderState extends State<ImageUploader> {
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              onPressed: () {},
+              onPressed: () {
+                seletImage(Source.camera);
+                Navigator.of(context).pop();
+              },
               label: const Text(
                 'From Camera',
                 style: TextStyle(
@@ -90,7 +93,10 @@ class _ImageUploaderState extends State<ImageUploader> {
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              onPressed: () {},
+              onPressed: () {
+                seletImage(Source.gallery);
+                Navigator.of(context).pop();
+              },
               label: const Text(
                 'From Gallery',
                 style: TextStyle(
