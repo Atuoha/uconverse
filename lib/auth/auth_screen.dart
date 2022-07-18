@@ -5,6 +5,7 @@ import 'package:uconverse/constants/color.dart';
 import '../screens/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 class AuthScreen extends StatefulWidget {
   static const routeName = 'AuthScreen';
@@ -33,13 +34,35 @@ class _AuthScreenState extends State<AuthScreen> {
 
   // google auth
   Future<UserCredential> _googleauth() async {
+    // Trigger the authentication flow
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+    // Obtain the auth details from the request
     final GoogleSignInAuthentication? googleAuth =
         await googleUser?.authentication;
 
+    // Create a new credential
     final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth?.accessToken, idToken: googleAuth?.idToken);
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+    // Once signed in, return the UserCredential
     return FirebaseAuth.instance.signInWithCredential(credential);
+  }
+
+  // facebook auth
+  Future<UserCredential> _facebookauth() async {
+    // Trigger the sign-in flow
+    final LoginResult loginResult = await FacebookAuth.instance.login();
+
+    // Create a credential from the access token
+    final OAuthCredential facebookAuthCredential =
+        FacebookAuthProvider.credential(
+      loginResult.accessToken!.token,
+    );
+
+    // Once signed in, return the UserCredential
+    return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
   }
 
   // email password authentication (signin and signup)
@@ -346,13 +369,20 @@ class _AuthScreenState extends State<AuthScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Chip(
-                                  elevation: 2,
-                                  backgroundColor:
-                                      Color.fromARGB(255, 2, 85, 153),
-                                  label: Icon(
-                                    Icons.facebook,
-                                    color: Colors.white,
+                                GestureDetector(
+                                  onTap: () => _facebookauth(),
+                                  child: const Chip(
+                                    elevation: 2,
+                                    backgroundColor: Color.fromARGB(
+                                      255,
+                                      2,
+                                      85,
+                                      153,
+                                    ),
+                                    label: Icon(
+                                      Icons.facebook,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(width: 10),
