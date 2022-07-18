@@ -12,18 +12,38 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
-  var emailController = TextEditingController();
-  var usernameController = TextEditingController();
-  var passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  final _emailController = TextEditingController();
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
   var _obscure = true;
   bool isSignIn = true;
 
-  void AuthScreen(
+  @override
+  void initState() {
+    _passwordController.addListener(() {
+      setState(() {
+        
+      });
+    });
+    super.initState();
+  }
+
+  void _authSign(
     String email,
     String username,
     String password,
     BuildContext context,
   ) {
+    var valid = _formKey.currentState!.validate();
+    if (!valid) {
+      return;
+    }
+    if (isSignIn) {
+      // signin
+    } else {
+      // signup
+    }
     // ...
     Navigator.of(context).pushNamed(HomeScreen.routeName);
   }
@@ -148,123 +168,145 @@ class _AuthScreenState extends State<AuthScreen> {
                       left: 10,
                       right: 10,
                     ),
-                    child: Column(
-                      children: [
-                        Text(
-                          isSignIn ? 'Signin Account' : 'Signup Account ',
-                          style: const TextStyle(
-                            fontSize: 20,
-                          ),
-                        ),
-                        !isSignIn
-                            ? TextFormField(
-                                textInputAction: TextInputAction.next,
-                                autofocus: true,
-                                controller: usernameController,
-                                keyboardType: TextInputType.emailAddress,
-                                decoration: const InputDecoration(
-                                  hintText: 'placeholder',
-                                  labelText: 'Username',
-                                  icon: Icon(Icons.account_box),
-                                ),
-                              )
-                            : const Text(''),
-                        SizedBox(height: isSignIn ? 0 : 20),
-                        TextFormField(
-                          textInputAction: TextInputAction.next,
-                          autofocus: true,
-                          controller: emailController,
-                          keyboardType: TextInputType.emailAddress,
-                          decoration: const InputDecoration(
-                            hintText: 'placeholder@gmail.com',
-                            labelText: 'Email',
-                            icon: Icon(
-                              Icons.email,
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          Text(
+                            isSignIn ? 'Signin Account' : 'Signup Account ',
+                            style: const TextStyle(
+                              fontSize: 20,
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 20),
-                        TextFormField(
-                          onFieldSubmitted: (value) {},
-                          obscureText: _obscure,
-                          textInputAction: TextInputAction.done,
-                          autofocus: true,
-                          controller: passwordController,
-                          decoration: InputDecoration(
-                            suffixIcon: passwordController.text.isNotEmpty
-                                ? IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        _obscure = !_obscure;
-                                      });
-                                    },
-                                    icon: Icon(
-                                      _obscure
-                                          ? Icons.visibility
-                                          : Icons.visibility_off,
-                                    ),
-                                  )
-                                : const Text(''),
-                            hintText: '********',
-                            labelText: 'Password',
-                            icon: const Icon(
-                              Icons.key,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        GestureDetector(
-                          onTap: () => AuthScreen(
-                            emailController.text,
-                            usernameController.text,
-                            passwordController.text,
-                            context,
-                          ),
-                          child: Card(
-                            color: accentColor,
-                            elevation: 2,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child:  Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 10,
-                                horizontal: 80,
+                          !isSignIn
+                              ? TextFormField(
+                                  textInputAction: TextInputAction.next,
+                                  autofocus: true,
+                                  controller: _usernameController,
+                                  keyboardType: TextInputType.emailAddress,
+                                  decoration: const InputDecoration(
+                                    hintText: 'placeholder',
+                                    labelText: 'Username',
+                                    icon: Icon(Icons.account_box),
+                                  ),
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return 'Username can not be empty!';
+                                    }
+                                    return null;
+                                  },
+                                )
+                              : const Text(''),
+                          SizedBox(height: isSignIn ? 0 : 20),
+                          TextFormField(
+                            textInputAction: TextInputAction.next,
+                            autofocus: true,
+                            controller: _emailController,
+                            keyboardType: TextInputType.emailAddress,
+                            decoration: const InputDecoration(
+                              hintText: 'placeholder@gmail.com',
+                              labelText: 'Email',
+                              icon: Icon(
+                                Icons.email,
                               ),
-                              child: Text(
-                                isSignIn ?'Sign in': 'Sign up',
-                                style: const TextStyle(
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Email can not be empty!';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 20),
+                          TextFormField(
+                            onFieldSubmitted: (value) {},
+                            obscureText: _obscure,
+                            textInputAction: TextInputAction.done,
+                            autofocus: true,
+                            controller: _passwordController,
+                            decoration: InputDecoration(
+                              suffixIcon: _passwordController.text.isNotEmpty
+                                  ? IconButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          _obscure = !_obscure;
+                                        });
+                                      },
+                                      icon: Icon(
+                                        _obscure
+                                            ? Icons.visibility
+                                            : Icons.visibility_off,
+                                      ),
+                                    )
+                                  : const Text(''),
+                              hintText: '********',
+                              labelText: 'Password',
+                              icon: const Icon(
+                                Icons.key,
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Password can not be empty!';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 20),
+                          GestureDetector(
+                            onTap: () => _authSign(
+                              _emailController.text,
+                              _usernameController.text,
+                              _passwordController.text,
+                              context,
+                            ),
+                            child: Card(
+                              color: accentColor,
+                              elevation: 2,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 10,
+                                  horizontal: 80,
+                                ),
+                                child: Text(
+                                  isSignIn ? 'Sign in' : 'Sign up',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          const Text('OR'),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Chip(
+                                elevation: 2,
+                                backgroundColor:
+                                    Color.fromARGB(255, 2, 85, 153),
+                                label: Icon(
+                                  Icons.facebook,
                                   color: Colors.white,
                                 ),
                               ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        const Text('OR'),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Chip(
-                              elevation: 2,
-                              backgroundColor: Color.fromARGB(255, 2, 85, 153),
-                              label: Icon(
-                                Icons.facebook,
-                                color: Colors.white,
-                              ),
-                            ),
-                            SizedBox(width: 10),
-                            Chip(
-                              elevation: 2,
-                              backgroundColor: buttonColor,
-                              label: Icon(
-                                Icons.g_mobiledata,
-                                color: Colors.white,
-                              ),
-                            )
-                          ],
-                        )
-                      ],
+                              SizedBox(width: 10),
+                              Chip(
+                                elevation: 2,
+                                backgroundColor: buttonColor,
+                                label: Icon(
+                                  Icons.g_mobiledata,
+                                  color: Colors.white,
+                                ),
+                              )
+                            ],
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),

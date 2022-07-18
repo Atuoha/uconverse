@@ -1,7 +1,10 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:uconverse/components/image_uploader.dart';
 import 'package:uconverse/constants/color.dart';
+import 'package:uconverse/screens/profile_screen.dart';
 
 class EditProfile extends StatefulWidget {
   static const routeName = 'edit-profile';
@@ -12,12 +15,41 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
-  var emailController = TextEditingController();
-  var usernameController = TextEditingController();
-  var passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  final _emailController = TextEditingController();
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
   var obscure = true;
-  // final _formkey = FormState();
-  File? image;
+  File? selectedImage;
+
+  void selectImage(File image) {
+    setState(() {
+      selectedImage = image;
+    });
+  }
+
+  @override
+  void initState() {
+    _passwordController.addListener(() {
+      setState(() {});
+    });
+    super.initState();
+  }
+
+  void _updateProfile(
+    String email,
+    String username,
+    String password,
+    BuildContext context,
+  ) {
+    var valid = _formKey.currentState!.validate();
+    if (!valid) {
+      return;
+    }
+
+    // ...
+    Navigator.of(context).pushNamed(ProfileScreen.routeName);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,57 +58,6 @@ class _EditProfileState extends State<EditProfile> {
         statusBarColor: Colors.transparent,
       ),
     );
-
-    Future avatarSource() {
-      return showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Center(
-            child: Text(
-              'Select Avatar Source',
-              style: TextStyle(
-                color: primaryColor,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          actions: [
-            ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                primary: accentColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              onPressed: () {},
-              label: const Text(
-                'From Camera',
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-              icon: const Icon(Icons.camera),
-            ),
-            ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                primary: accentColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              onPressed: () {},
-              label: const Text(
-                'From Gallery',
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-              icon: const Icon(Icons.photo),
-            ),
-          ],
-        ),
-      );
-    }
 
     return Scaffold(
       // extendBodyBehindAppBar: true,
@@ -113,44 +94,15 @@ class _EditProfileState extends State<EditProfile> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Container(
-                height: 120,
-                width: 120,
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                ),
-                child:
-                    // image != null? Image.file(image!.path):
-                    Image.asset(
-                  'assets/images/default.png',
-                  fit: BoxFit.cover,
-                ),
-              ),
-              ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  primary: accentColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                onPressed: avatarSource,
-                label: const Text(
-                  'Change Avatar',
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-                icon: const Icon(Icons.camera),
-              ),
+              ImageUploader(selectImage: selectImage),
               Form(
-                // key:,
+                key: _formKey,
                 child: Column(
                   children: [
                     TextFormField(
                       textInputAction: TextInputAction.next,
                       autofocus: true,
-                      controller: usernameController,
+                      controller: _usernameController,
                       keyboardType: TextInputType.emailAddress,
                       decoration: const InputDecoration(
                         hintText: 'placeholder',
@@ -168,7 +120,7 @@ class _EditProfileState extends State<EditProfile> {
                     TextFormField(
                       textInputAction: TextInputAction.next,
                       autofocus: true,
-                      controller: emailController,
+                      controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
                       decoration: const InputDecoration(
                         hintText: 'placeholder@gmail.com',
@@ -190,9 +142,9 @@ class _EditProfileState extends State<EditProfile> {
                       obscureText: obscure,
                       textInputAction: TextInputAction.done,
                       autofocus: true,
-                      controller: passwordController,
+                      controller: _passwordController,
                       decoration: InputDecoration(
-                        suffixIcon: passwordController.text.isNotEmpty
+                        suffixIcon: _passwordController.text.isNotEmpty
                             ? IconButton(
                                 onPressed: () {
                                   setState(() {
@@ -218,6 +170,34 @@ class _EditProfileState extends State<EditProfile> {
                         }
                         return null;
                       },
+                    ),
+                    const SizedBox(height: 20),
+                    GestureDetector(
+                      onTap: () => _updateProfile(
+                        _emailController.text,
+                        _usernameController.text,
+                        _passwordController.text,
+                        context,
+                      ),
+                      child: Card(
+                        color: accentColor,
+                        elevation: 2,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 10,
+                            horizontal: 80,
+                          ),
+                          child: Text(
+                            'Update Profile',
+                            style: const TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),

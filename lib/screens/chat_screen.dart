@@ -7,7 +7,7 @@ import '../widgets/receiver_chat.dart';
 import '../constants/color.dart';
 
 class ChatScreen extends StatefulWidget {
-  ChatScreen({Key? key}) : super(key: key);
+  const ChatScreen({Key? key}) : super(key: key);
   static const routeName = '/chat-screen';
 
   @override
