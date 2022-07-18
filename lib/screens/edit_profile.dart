@@ -35,17 +35,14 @@ class _EditProfileState extends State<EditProfile> {
     super.initState();
   }
 
-  void _updateProfile(
-    String email,
-    String username,
-    String password,
-    BuildContext context,
-  ) {
-    var valid = _formKey.currentState!.validate();
+  void _updateProfile(BuildContext context) {
+    final valid = _formKey.currentState!.validate();
+    FocusScope.of(context).unfocus();
+    _formKey.currentState!.save();
     if (!valid) {
       return;
     }
-
+  
     // ...
     Navigator.of(context).pushNamed(ProfileScreen.routeName);
   }
@@ -78,12 +75,7 @@ class _EditProfileState extends State<EditProfile> {
         ),
         actions: [
           IconButton(
-            onPressed: () => _updateProfile(
-              _emailController.text,
-              _usernameController.text,
-              _passwordController.text,
-              context,
-            ),
+            onPressed: () => _updateProfile(context),
             icon: const Icon(
               Icons.check,
               color: primaryColor,
@@ -107,7 +99,6 @@ class _EditProfileState extends State<EditProfile> {
                       textInputAction: TextInputAction.next,
                       autofocus: true,
                       controller: _usernameController,
-                      keyboardType: TextInputType.emailAddress,
                       decoration: const InputDecoration(
                         hintText: 'placeholder',
                         labelText: 'Username',
@@ -115,7 +106,9 @@ class _EditProfileState extends State<EditProfile> {
                       ),
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return 'Username can\'t be empty';
+                          return 'Username can not be empty!';
+                        } else if (value.length < 3) {
+                          return 'Username should be up 3 characters!';
                         }
                         return null;
                       },
@@ -134,8 +127,8 @@ class _EditProfileState extends State<EditProfile> {
                         ),
                       ),
                       validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Email can\'t be empty';
+                        if (value!.isEmpty || !value.contains('@')) {
+                          return 'Enter valid email address!';
                         }
                         return null;
                       },
@@ -171,6 +164,8 @@ class _EditProfileState extends State<EditProfile> {
                       validator: (value) {
                         if (value!.isEmpty) {
                           return 'Password can\'t be empty';
+                        } else if (value.length < 8) {
+                          return 'Password is not strong enough!';
                         }
                         return null;
                       },

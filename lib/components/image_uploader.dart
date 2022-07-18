@@ -34,7 +34,7 @@ class _ImageUploaderState extends State<ImageUploader> {
       case Source.gallery:
         pickedImage = await ImagePicker().pickImage(
           source: ImageSource.gallery,
-          maxWidth: 600,
+          maxWidth: 800,
         );
         break;
     }
