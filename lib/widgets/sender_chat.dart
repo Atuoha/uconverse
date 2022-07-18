@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../models/models.dart';
 
 class SenderChat extends StatelessWidget {
   final String message;

@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 import '/constants/color.dart';
 import '../widgets/favorite_contacts.dart';
 import '../widgets/home_chats.dart';
@@ -7,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../widgets/category_container.dart';
 import 'profile_screen.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/home';

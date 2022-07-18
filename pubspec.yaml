@@ -42,6 +42,9 @@ dependencies:
   path_provider: ^2.0.11
   path: ^1.8.1
   firebase_auth: ^3.4.2
+  google_sign_in: ^5.4.0
+  flutter_facebook_auth: ^4.4.0+1
+ 
 
 dev_dependencies:
   flutter_test:

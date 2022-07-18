@@ -3,8 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../constants/color.dart';
 import '../screens/chat_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../providers/providers.dart';
+
 
 class HomeChats extends StatelessWidget {
   HomeChats({Key? key}) : super(key: key);
@@ -14,7 +13,7 @@ class HomeChats extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var msgData = Provider.of<MessageData>(context);
+    // var msgData = Provider.of<MessageData>(context);
     // var userData = Provider.of<UserData>(context);
 
     return Expanded(
@@ -112,16 +111,16 @@ class HomeChats extends StatelessWidget {
                                     ],
                                   ),
                                   Column(
-                                    children: [
+                                    children: const[
                                       Text(
                                       '12:00',
-                                        style: const TextStyle(
+                                        style:  TextStyle(
                                           fontSize: 10,
                                           color: Colors.blueGrey,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      const SizedBox(height: 10),
+                                       SizedBox(height: 10),
                                       // msgData.chats[index].unread
                                       //     ? Container(
                                       //         height: 20,

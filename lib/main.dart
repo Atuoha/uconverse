@@ -32,7 +32,9 @@ class Uconverse extends StatelessWidget {
     FirebaseApp app = await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    print('Initialized default app $app');
+    if (kDebugMode) {
+      print('Initialized default app $app');
+    }
   }
 
   @override
@@ -59,7 +61,7 @@ class Uconverse extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         home: const SplashScreen(),
         routes: {
-          ChatScreen.routeName: (context) =>  ChatScreen(),
+          ChatScreen.routeName: (context) =>  const ChatScreen(),
           HomeScreen.routeName: (context) => const HomeScreen(),
           AuthScreen.routeName: (context) => const AuthScreen(),
           ProfileScreen.routeName: (context) => const ProfileScreen(),

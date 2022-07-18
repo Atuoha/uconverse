@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:uconverse/constants/color.dart';
 import '../screens/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthScreen extends StatefulWidget {
   static const routeName = 'AuthScreen';
@@ -30,14 +31,18 @@ class _AuthScreenState extends State<AuthScreen> {
     super.initState();
   }
 
-  @override
-  void didChangeDependencies() {
-    setState(() {
-      isSignIn;
-    });
-    super.didChangeDependencies();
+  // google auth
+  Future<UserCredential> _googleauth() async {
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    final GoogleSignInAuthentication? googleAuth =
+        await googleUser?.authentication;
+
+    final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken, idToken: googleAuth?.idToken);
+    return FirebaseAuth.instance.signInWithCredential(credential);
   }
 
+  // email password authentication (signin and signup)
   void _authSign(BuildContext context) async {
     final valid = _formKey.currentState!.validate();
     FocusScope.of(context).unfocus();
@@ -66,10 +71,8 @@ class _AuthScreenState extends State<AuthScreen> {
 
     } on FirebaseAuthException catch (e) {
       var error = 'An error occured. Check credentials!';
-      if (e.code == 'user-not-found') {
-        error = 'User not found. Check email address';
-      } else if (e.code == 'wrong-password') {
-        error = 'Password incorrect. Try again!';
+      if (e.message != null) {
+        error = e.message!;
       }
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -82,8 +85,17 @@ class _AuthScreenState extends State<AuthScreen> {
             ),
           ),
           backgroundColor: accentColor,
+          action: SnackBarAction(
+            onPressed: () => Navigator.of(context).pop(),
+            label: 'Dismiss',
+            textColor: buttonColor,
+          ),
         ),
       );
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
     }
     // ...
   }
@@ -110,28 +122,30 @@ class _AuthScreenState extends State<AuthScreen> {
                   color: primaryColor,
                   child: Padding(
                     padding: const EdgeInsets.only(top: 70, bottom: 20),
-                    child: Column(children: const [
-                      CircleAvatar(
-                        radius: 60,
-                        backgroundImage: AssetImage(
-                          'assets/images/uconverse.jpg',
+                    child: Column(
+                      children: const [
+                        CircleAvatar(
+                          radius: 60,
+                          backgroundImage: AssetImage(
+                            'assets/images/uconverse.jpg',
+                          ),
                         ),
-                      ),
-                      Text(
-                        'Uconverse',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 32,
+                        Text(
+                          'Uconverse',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 32,
+                          ),
                         ),
-                      ),
-                      Text(
-                        '...conversing without limits',
-                        style: TextStyle(
-                          color: Colors.white,
+                        Text(
+                          '...conversing without limits',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
                         ),
-                      ),
-                    ]),
+                      ],
+                    ),
                   ),
                 ),
                 Container(
@@ -151,8 +165,11 @@ class _AuthScreenState extends State<AuthScreen> {
                   ),
                   child: Center(
                     child: Padding(
-                      padding:
-                          const EdgeInsets.only(top: 170, right: 10, left: 10),
+                      padding: const EdgeInsets.only(
+                        top: 170,
+                        right: 10,
+                        left: 10,
+                      ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -166,12 +183,14 @@ class _AuthScreenState extends State<AuthScreen> {
                             ),
                           ),
                           TextButton(
-                            onPressed: () => setState(() {
-                              isSignIn = !isSignIn;
-                              _emailController.clear();
-                              _usernameController.clear();
-                              _passwordController.clear();
-                            }),
+                            onPressed: () => setState(
+                              () {
+                                isSignIn = !isSignIn;
+                                _emailController.clear();
+                                _usernameController.clear();
+                                _passwordController.clear();
+                              },
+                            ),
                             child: Text(
                               isSignIn ? 'SIGN UP' : 'SIGN IN',
                               style: const TextStyle(
@@ -326,8 +345,8 @@ class _AuthScreenState extends State<AuthScreen> {
                             const Text('OR'),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
-                                Chip(
+                              children: [
+                                const Chip(
                                   elevation: 2,
                                   backgroundColor:
                                       Color.fromARGB(255, 2, 85, 153),
@@ -336,13 +355,16 @@ class _AuthScreenState extends State<AuthScreen> {
                                     color: Colors.white,
                                   ),
                                 ),
-                                SizedBox(width: 10),
-                                Chip(
-                                  elevation: 2,
-                                  backgroundColor: buttonColor,
-                                  label: Icon(
-                                    Icons.g_mobiledata,
-                                    color: Colors.white,
+                                const SizedBox(width: 10),
+                                GestureDetector(
+                                  onTap: () => _googleauth(),
+                                  child: const Chip(
+                                    elevation: 2,
+                                    backgroundColor: buttonColor,
+                                    label: Icon(
+                                      Icons.g_mobiledata,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 )
                               ],

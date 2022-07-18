@@ -63,7 +63,9 @@ class SplashContainer extends StatelessWidget {
                     'Start exploring',
                     style: TextStyle(color: Colors.white),
                   ),
-                  onPressed: () => Navigator.of(context).pushNamed(
+                  onPressed: () => Navigator.of(
+                    context,
+                  ).pushNamed(
                     AuthScreen.routeName,
                   ),
                 )
