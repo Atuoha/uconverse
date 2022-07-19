@@ -6,6 +6,7 @@ import '../screens/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AuthScreen extends StatefulWidget {
   static const routeName = 'AuthScreen';
@@ -46,9 +47,12 @@ class _AuthScreenState extends State<AuthScreen> {
       accessToken: googleAuth?.accessToken,
       idToken: googleAuth?.idToken,
     );
+
     // Once signed in, return the UserCredential
     return FirebaseAuth.instance.signInWithCredential(credential);
   }
+
+
 
   // facebook auth
   Future<UserCredential> _facebookauth() async {
@@ -80,15 +84,24 @@ class _AuthScreenState extends State<AuthScreen> {
       if (isSignIn) {
         // signin
         credential = await _auth.signInWithEmailAndPassword(
-          email: _emailController.text,
-          password: _passwordController.text,
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim(),
         );
       } else {
         // signup
         credential = await _auth.createUserWithEmailAndPassword(
-          email: _emailController.text,
-          password: _passwordController.text,
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim(),
         );
+
+        // sending username to firestore
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(credential.user!.uid)
+            .set({
+          "username": _usernameController.text.trim(),
+          "email": _emailController.text.trim(),
+        });
       }
       // Navigator.of(context).pushNamed(HomeScreen.routeName);
 
