@@ -70,15 +70,22 @@ class _AuthScreenState extends State<AuthScreen> {
       idToken: googleAuth?.idToken,
     );
 
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(googleUser!.id)
-        .set({
-      "email": googleUser.email,
-      "username": googleUser.displayName,
-      "image": googleUser.photoUrl,
-      "login-mode": 'google',
-    });
+    try {
+      // Once signed in, return the UserCredential
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(googleUser!.id)
+          .set({
+        "email": googleUser.email,
+        "username": googleUser.displayName,
+        "image": googleUser.photoUrl,
+        "login-mode": 'google',
+      });
+    } on FirebaseAuthException catch (e) {
+      showSnackBar(e.message!);
+    } catch (e) {
+      showSnackBar('An error occured. Try again!');
+    }
 
     // Once signed in, return the UserCredential
     return FirebaseAuth.instance.signInWithCredential(credential);
@@ -103,6 +110,7 @@ class _AuthScreenState extends State<AuthScreen> {
       user = await userData;
 
       if (user['email'] != "") {
+        // sending credential to firebase when email account is associated
         await FirebaseFirestore.instance
             .collection('users')
             .doc(loginResult.accessToken!.userId)
