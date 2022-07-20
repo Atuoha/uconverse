@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../widgets/sender_chat.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +20,7 @@ class _ChatScreenState extends State<ChatScreen> {
       .collection('chats/i9IFa7EAlYRZvzQkdUVQ/messages');
 
   final _textController = TextEditingController();
+  final user = FirebaseAuth.instance.currentUser;
 
   @override
   void initState() {
@@ -32,7 +34,11 @@ class _ChatScreenState extends State<ChatScreen> {
   void sendChat() {
     var chat = _textController.text;
     if (chat.isNotEmpty) {
-      _chats.add({'text': chat});
+      _chats.add({
+        'msg': chat,
+        'userId': user!.uid,
+        'createdAt': Timestamp.now(),
+      });
       _textController.clear();
     }
     return;
@@ -134,21 +140,22 @@ class _ChatScreenState extends State<ChatScreen> {
                           (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                         if (snapshot.hasData) {
                           return ListView.builder(
-                              padding: const EdgeInsets.only(top: 10),
-                              itemCount: snapshot.data!.docs.length,
-                              itemBuilder: (context, index) {
-                                final DocumentSnapshot documentSnapshot =
-                                    snapshot.data!.docs[index];
-                                return SenderChat(
-                                  message: documentSnapshot['text'],
-                                  time: documentSnapshot['text'],
-                                );
-
-                                // ReceiverChat(
-                                //   message: documentSnapshot['text'],
-                                //   time: documentSnapshot['text'],
-                                // );
-                              });
+                            padding: const EdgeInsets.only(top: 10),
+                            itemCount: snapshot.data!.docs.length,
+                            itemBuilder: (context, index) {
+                              final DocumentSnapshot documentSnapshot =
+                                  snapshot.data!.docs[index];
+                              return documentSnapshot['userId'] == user!.uid
+                                  ? SenderChat(
+                                      message: documentSnapshot['text'],
+                                      time: documentSnapshot['createdAt'],
+                                    )
+                                  : ReceiverChat(
+                                      message: documentSnapshot['text'],
+                                      time: documentSnapshot['createdAt'],
+                                    );
+                            },
+                          );
                         }
 
                         return const Center(

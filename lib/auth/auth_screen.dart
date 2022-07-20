@@ -24,6 +24,7 @@ class _AuthScreenState extends State<AuthScreen> {
   final _passwordController = TextEditingController();
   var _obscure = true;
   bool isSignIn = true;
+  var _isLoading = false;
 
   @override
   void initState() {
@@ -33,8 +34,29 @@ class _AuthScreenState extends State<AuthScreen> {
     super.initState();
   }
 
+  void showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(
+        message,
+        style: const TextStyle(
+          color: primaryColor,
+        ),
+      ),
+      backgroundColor: accentColor,
+      action: SnackBarAction(
+        onPressed: () => Navigator.of(context).pop(),
+        label: 'Dismiss',
+        textColor: buttonColor,
+      ),
+    ));
+  }
+
   // google auth
   Future<UserCredential> _googleauth() async {
+    setState(() {
+      _isLoading = true;
+    });
+
     // Trigger the authentication flow
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
@@ -48,11 +70,20 @@ class _AuthScreenState extends State<AuthScreen> {
       idToken: googleAuth?.idToken,
     );
 
+
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(googleUser!.id)
+        .set({
+      "email": googleUser.email,
+      "username": googleUser.displayName,
+      "image": googleUser.photoUrl,
+      "login-mode": 'google',
+    });
+
     // Once signed in, return the UserCredential
     return FirebaseAuth.instance.signInWithCredential(credential);
   }
-
-
 
   // facebook auth
   Future<UserCredential> _facebookauth() async {
@@ -64,6 +95,31 @@ class _AuthScreenState extends State<AuthScreen> {
         FacebookAuthProvider.credential(
       loginResult.accessToken!.token,
     );
+    setState(() {
+      _isLoading = true;
+    });
+    if (loginResult.status == LoginStatus.success) {
+      Map<String, dynamic> user;
+      final userData = FacebookAuth.instance.getUserData();
+      user = await userData;
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(loginResult.accessToken!.userId)
+          .set(
+        {
+          "username": user['name'],
+          "email": user['email'],
+          "image": user['picture']['data']['url'],
+          "login-mode": 'facebook',
+        },
+      );
+    } else {
+      showSnackBar(loginResult.message!); // showSnackBar will show error if any
+      setState(() {
+        _isLoading = false;
+      });
+    }
 
     // Once signed in, return the UserCredential
     return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
@@ -81,6 +137,9 @@ class _AuthScreenState extends State<AuthScreen> {
     UserCredential credential;
 
     try {
+      setState(() {
+        _isLoading = true;
+      });
       if (isSignIn) {
         // signin
         credential = await _auth.signInWithEmailAndPassword(
@@ -94,15 +153,18 @@ class _AuthScreenState extends State<AuthScreen> {
           password: _passwordController.text.trim(),
         );
 
-        // sending username to firestore
+        // sending username and email to firestore
         await FirebaseFirestore.instance
             .collection('users')
             .doc(credential.user!.uid)
             .set({
           "username": _usernameController.text.trim(),
           "email": _emailController.text.trim(),
+          "image": '',
+          "login-mode": 'email',
         });
       }
+
       // Navigator.of(context).pushNamed(HomeScreen.routeName);
 
     } on FirebaseAuthException catch (e) {
@@ -111,27 +173,18 @@ class _AuthScreenState extends State<AuthScreen> {
         error = e.message!;
       }
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            error,
-            style: const TextStyle(
-              fontWeight: FontWeight.w600,
-              color: primaryColor,
-            ),
-          ),
-          backgroundColor: accentColor,
-          action: SnackBarAction(
-            onPressed: () => Navigator.of(context).pop(),
-            label: 'Dismiss',
-            textColor: buttonColor,
-          ),
-        ),
-      );
+      showSnackBar(error); // showSnackBar will show error if any
+      setState(() {
+        _isLoading = false;
+      });
     } catch (e) {
       if (kDebugMode) {
         print(e);
       }
+
+      setState(() {
+        _isLoading = false;
+      });
     }
     // ...
   }
@@ -209,33 +262,37 @@ class _AuthScreenState extends State<AuthScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
-                            isSignIn
-                                ? 'Don\'t have an account?'
-                                : 'Already have an account?',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: primaryColor,
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () => setState(
-                              () {
-                                isSignIn = !isSignIn;
-                                _emailController.clear();
-                                _usernameController.clear();
-                                _passwordController.clear();
-                              },
-                            ),
-                            child: Text(
-                              isSignIn ? 'SIGN UP' : 'SIGN IN',
+                          if (!_isLoading) ...[
+                            Text(
+                              isSignIn
+                                  ? 'Don\'t have an account?'
+                                  : 'Already have an account?',
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 20,
-                                color: accentColor,
+                                color: primaryColor,
                               ),
                             ),
-                          )
+                            TextButton(
+                              onPressed: () => setState(
+                                () {
+                                  isSignIn = !isSignIn;
+                                  _emailController.clear();
+                                  _usernameController.clear();
+                                  _passwordController.clear();
+                                },
+                              ),
+                              child: Text(
+                                isSignIn ? 'SIGN UP' : 'SIGN IN',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                  color: accentColor,
+                                ),
+                              ),
+                            )
+                          ] else ...[
+                            const CircularProgressIndicator(color: primaryColor)
+                          ]
                         ],
                       ),
                     ),

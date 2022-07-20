@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class SenderChat extends StatelessWidget {
   final String message;
@@ -12,6 +13,13 @@ class SenderChat extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    DateTime toDate(time) {
+      return DateTime.fromMicrosecondsSinceEpoch(time.microsecondsSinceEpoch);
+    }
+
+    var date = toDate(time);
+    var chatTime = DateFormat.jm().format(date);
+
     return Container(
       margin: const EdgeInsets.only(
         top: 10,
@@ -32,8 +40,8 @@ class SenderChat extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-               Text(
-             time,
+              Text(
+                chatTime,
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 12,
@@ -45,7 +53,7 @@ class SenderChat extends StatelessWidget {
               SizedBox(
                 width: MediaQuery.of(context).size.width * 0.60,
                 child: Text(
-                message,
+                  message,
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
