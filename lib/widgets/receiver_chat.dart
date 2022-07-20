@@ -33,7 +33,7 @@ class ReceiverChat extends StatelessWidget {
             decoration: BoxDecoration(
               color: Theme.of(context).primaryColor.withOpacity(0.1),
               borderRadius: const BorderRadius.only(
-                bottomRight: Radius.circular(20),
+                // bottomRight: Radius.circular(20),
                 topRight: Radius.circular(20),
               ),
             ),

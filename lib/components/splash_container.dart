@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import '../screens/home_screen.dart';
 import '/auth/auth_screen.dart';
 import '../constants/color.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SplashContainer extends StatelessWidget {
   final String title;
@@ -63,12 +65,27 @@ class SplashContainer extends StatelessWidget {
                     'Start exploring',
                     style: TextStyle(color: Colors.white),
                   ),
-                  onPressed: () => Navigator.of(
-                    context,
-                  ).pushNamed(
-                    AuthScreen.routeName,
-                  ),
-                )
+                  onPressed: () {
+                    FirebaseAuth.instance
+                        .authStateChanges()
+                        .listen((User? user) {
+                      if (user != null) {
+                        // user is signed in
+                        Navigator.of(
+                          context,
+                        ).pushNamed(
+                          HomeScreen.routeName,
+                        );
+                      } else {
+                        // user is not signed in
+                        Navigator.of(
+                          context,
+                        ).pushNamed(
+                          AuthScreen.routeName,
+                        );
+                      }
+                    });
+                  })
               : const Text('')
         ],
       ),

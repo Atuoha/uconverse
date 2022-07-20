@@ -1,8 +1,14 @@
 import '../models/user_model.dart';
 import 'package:flutter/material.dart';
 
-
 class UserData extends ChangeNotifier {
+  var loginMode =
+      0; // 0 represent email, 1 represent google and 2 represent facebook
+
+  void setLoginMode(int mode) {
+    loginMode = mode;
+    notifyListeners();
+  }
 
   User findById(int id) {
     return _users.firstWhere((user) => user.id == id);

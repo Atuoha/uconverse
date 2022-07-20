@@ -1,7 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:uconverse/constants/color.dart';
+import '../providers/users.dart';
 import '../screens/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -80,6 +82,9 @@ class _AuthScreenState extends State<AuthScreen> {
         "username": googleUser.displayName,
         "image": googleUser.photoUrl,
         "login-mode": 'google',
+      }).then((value) {
+        Provider.of<UserData>(context).setLoginMode(1);
+        Navigator.of(context).pushNamed(HomeScreen.routeName);
       });
     } on FirebaseAuthException catch (e) {
       showSnackBar(e.message!);
@@ -121,7 +126,10 @@ class _AuthScreenState extends State<AuthScreen> {
             "image": user['picture']['data']['url'],
             "login-mode": 'facebook',
           },
-        );
+        ).then((value) {
+          Provider.of<UserData>(context).setLoginMode(1);
+          Navigator.of(context).pushNamed(HomeScreen.routeName);
+        });
       } else {
         showSnackBar(
           'No email assigned to facebook account! Account can not be used',
@@ -178,6 +186,9 @@ class _AuthScreenState extends State<AuthScreen> {
           "email": _emailController.text.trim(),
           "image": '',
           "login-mode": 'email',
+        }).then((value) {
+          Provider.of<UserData>(context).setLoginMode(0);
+          Navigator.of(context).pushNamed(HomeScreen.routeName);
         });
       }
     } on FirebaseAuthException catch (e) {

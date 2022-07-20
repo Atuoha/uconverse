@@ -32,7 +32,7 @@ class SenderChat extends StatelessWidget {
           color: Theme.of(context).colorScheme.secondary,
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(20),
-            bottomLeft: Radius.circular(20),
+            // bottomLeft: Radius.circular(20),
           ),
         ),
         child: Padding(
