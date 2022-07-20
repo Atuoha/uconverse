@@ -70,7 +70,6 @@ class _AuthScreenState extends State<AuthScreen> {
       idToken: googleAuth?.idToken,
     );
 
-
     await FirebaseFirestore.instance
         .collection('users')
         .doc(googleUser!.id)
@@ -103,17 +102,26 @@ class _AuthScreenState extends State<AuthScreen> {
       final userData = FacebookAuth.instance.getUserData();
       user = await userData;
 
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(loginResult.accessToken!.userId)
-          .set(
-        {
-          "username": user['name'],
-          "email": user['email'],
-          "image": user['picture']['data']['url'],
-          "login-mode": 'facebook',
-        },
-      );
+      if (user['email'] != "") {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(loginResult.accessToken!.userId)
+            .set(
+          {
+            "username": user['name'],
+            "email": user['email'],
+            "image": user['picture']['data']['url'],
+            "login-mode": 'facebook',
+          },
+        );
+      } else {
+        showSnackBar(
+          'No email assigned to facebook account! Account can not be used',
+        ); // showSnackBar will show error if any
+        setState(() {
+          _isLoading = false;
+        });
+      }
     } else {
       showSnackBar(loginResult.message!); // showSnackBar will show error if any
       setState(() {
@@ -164,9 +172,6 @@ class _AuthScreenState extends State<AuthScreen> {
           "login-mode": 'email',
         });
       }
-
-      // Navigator.of(context).pushNamed(HomeScreen.routeName);
-
     } on FirebaseAuthException catch (e) {
       var error = 'An error occured. Check credentials!';
       if (e.message != null) {

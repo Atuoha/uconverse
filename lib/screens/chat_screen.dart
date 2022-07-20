@@ -147,11 +147,11 @@ class _ChatScreenState extends State<ChatScreen> {
                                   snapshot.data!.docs[index];
                               return documentSnapshot['userId'] == user!.uid
                                   ? SenderChat(
-                                      message: documentSnapshot['text'],
+                                      message: documentSnapshot['msg'],
                                       time: documentSnapshot['createdAt'],
                                     )
                                   : ReceiverChat(
-                                      message: documentSnapshot['text'],
+                                      message: documentSnapshot['msg'],
                                       time: documentSnapshot['createdAt'],
                                     );
                             },
