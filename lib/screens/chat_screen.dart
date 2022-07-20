@@ -59,7 +59,7 @@ class _ChatScreenState extends State<ChatScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CircleAvatar(
-              backgroundImage: AssetImage(userData.findById(2).imageUrl),
+              backgroundImage: AssetImage(userData.findById(2).imageUrl,),
             ),
             const SizedBox(width: 10),
             Text(
@@ -157,7 +157,6 @@ class _ChatScreenState extends State<ChatScreen> {
                             },
                           );
                         }
-
                         return const Center(
                           child: CircularProgressIndicator(
                             color: primaryColor,
