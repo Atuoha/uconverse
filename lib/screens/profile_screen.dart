@@ -74,6 +74,7 @@ class ProfileScreen extends StatelessWidget {
                   } else {
                     // logout facebook auth type
                     await FacebookAuth.instance.logOut();
+                    await FirebaseAuth.instance.signOut();
                   }
                 },
                 label: const Text(

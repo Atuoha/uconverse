@@ -28,6 +28,7 @@ class SplashScreenState extends State<SplashScreen> {
       imageAsset: 'assets/images/uconverse.jpg',
       backgroundColor: Colors.white,
       textColor: primaryColor,
+      isFirst: true,
     ),
     const SplashContainer(
       title: 'Feel the vibes of others',
