@@ -83,7 +83,7 @@ class _AuthScreenState extends State<AuthScreen> {
         "image": googleUser.photoUrl,
         "login-mode": 'google',
       }).then((value) {
-        Provider.of<UserData>(context).setLoginMode(1);
+        Provider.of<UserData>(context,listen:false).setLoginMode(1);
         Navigator.of(context).pushNamed(HomeScreen.routeName);
       });
     } on FirebaseAuthException catch (e) {
@@ -98,6 +98,15 @@ class _AuthScreenState extends State<AuthScreen> {
 
   // facebook auth
   Future<UserCredential> _facebookauth() async {
+    final AccessToken? accessToken = await FacebookAuth.instance.accessToken;
+
+    if (accessToken != null) {
+      // ignore: use_build_context_synchronously
+      Provider.of<UserData>(context,listen:false).setLoginMode(2);
+      // ignore: use_build_context_synchronously
+      Navigator.of(context).pushNamed(HomeScreen.routeName);
+    }
+
     // Trigger the sign-in flow
     final LoginResult loginResult = await FacebookAuth.instance.login();
 
@@ -127,7 +136,7 @@ class _AuthScreenState extends State<AuthScreen> {
             "login-mode": 'facebook',
           },
         ).then((value) {
-          Provider.of<UserData>(context).setLoginMode(1);
+          Provider.of<UserData>(context,listen:false).setLoginMode(2);
           Navigator.of(context).pushNamed(HomeScreen.routeName);
         });
       } else {
@@ -144,6 +153,7 @@ class _AuthScreenState extends State<AuthScreen> {
         _isLoading = false;
       });
     }
+    
 
     // Once signed in, return the UserCredential
     return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
@@ -187,7 +197,7 @@ class _AuthScreenState extends State<AuthScreen> {
           "image": '',
           "login-mode": 'email',
         }).then((value) {
-          Provider.of<UserData>(context).setLoginMode(0);
+          Provider.of<UserData>(context,listen:false).setLoginMode(0);
           Navigator.of(context).pushNamed(HomeScreen.routeName);
         });
       }
