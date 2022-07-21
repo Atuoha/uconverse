@@ -1,8 +1,14 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:provider/provider.dart';
 import 'package:uconverse/screens/edit_profile.dart';
 
+import '../auth/auth_screen.dart';
 import '../constants/color.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import '../providers/providers.dart';
 
 class ProfileScreen extends StatelessWidget {
   static const routeName = 'profile';
@@ -18,6 +24,67 @@ class ProfileScreen extends StatelessWidget {
         trailing: const Icon(
           Icons.chevron_right,
         ),
+      );
+    }
+
+    var user = FirebaseAuth.instance.currentUser;
+
+    Future showLogoutModal() {
+      var loginMode = Provider.of<UserData>(context, listen: false).loginMode;
+      String titleMode;
+      if (loginMode == 0) {
+        // email - password auth type
+        titleMode = 'Email and Password';
+      } else if (loginMode == 1) {
+        // google auth type
+        titleMode = 'Google';
+      } else {
+        // facebook auth type
+        titleMode = 'Facebook';
+      }
+      return showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+            title: const Center(
+              child: Text(
+                'Logout Account?',
+                style: TextStyle(
+                  color: primaryColor,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            content: Text('You are currently logged in using $titleMode.',
+                textAlign: TextAlign.center),
+            actions: [
+              ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  primary: accentColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                onPressed: () async {
+                  if (loginMode == 0) {
+                    // logout email - password auth type
+                    await FirebaseAuth.instance.signOut();
+                  } else if (loginMode == 1) {
+                    // logout google auth type
+                    await FirebaseAuth.instance.signOut();
+                  } else {
+                    // logout facebook auth type
+                    await FacebookAuth.instance.logOut();
+                  }
+                },
+                label: const Text(
+                  'Logout',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+                icon: const Icon(Icons.logout),
+              ),
+            ]),
       );
     }
 
@@ -85,9 +152,12 @@ class ProfileScreen extends StatelessWidget {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Icon(
-                                Icons.settings,
-                                color: buttonColor,
+                              GestureDetector(
+                                onTap: () => showLogoutModal(),
+                                child: const Icon(
+                                  Icons.logout,
+                                  color: buttonColor,
+                                ),
                               ),
                               GestureDetector(
                                 onTap: () => Navigator.of(context).pushNamed(
