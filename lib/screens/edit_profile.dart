@@ -67,6 +67,24 @@ class _EditProfileState extends State<EditProfile> {
     super.initState();
   }
 
+  // snackbar
+  void showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(
+        message,
+        style: const TextStyle(
+          color: primaryColor,
+        ),
+      ),
+      backgroundColor: accentColor,
+      action: SnackBarAction(
+        onPressed: () => Navigator.of(context).pop(),
+        label: 'Dismiss',
+        textColor: buttonColor,
+      ),
+    ));
+  }
+
   Future<void> _updateProfile(BuildContext context) async {
     final valid = _formKey.currentState!.validate();
     FocusScope.of(context).unfocus();
@@ -75,29 +93,32 @@ class _EditProfileState extends State<EditProfile> {
       return;
     }
 
-    final storageRef =
-        FirebaseStorage.instance.ref().child('user_images').child(user!.uid);
-    File file = File(selectedImage!.path);
-
-    try {
-      await storageRef.putFile(file);
-    } on FirebaseException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(
-          'error occurred ${e.message}',
-          style: const TextStyle(
-            color: primaryColor,
-          ),
-        ),
-        backgroundColor: accentColor,
-        action: SnackBarAction(
-          onPressed: () => Navigator.of(context).pop(),
-          label: 'Dismiss',
-          textColor: buttonColor,
-        ),
-      ));
+    final storageRef = FirebaseStorage.instance
+        .ref()
+        .child('user_images')
+        .child('${user!.uid}.jpg');
+    File? file;
+    if (selectedImage != null) {
+      file = File(selectedImage!.path);
     }
 
+    try {
+      if (selectedImage != null) {
+        await storageRef.putFile(file!);
+      }
+      await user!.updateEmail(_emailController.text.trim());
+      await user!.updatePassword(_passwordController.text.trim());
+      await FirebaseFirestore.instance.collection('users').doc(user!.uid).set({
+        'username': _usernameController.text.trim(),
+        'email': _emailController.text.trim(),
+        'image': '',
+        'login-mode': 'email',
+      });
+    } on FirebaseException catch (e) {
+      showSnackBar('Error occurred! ${e.message}');
+    } catch (e) {
+      showSnackBar('Error occurred! $e');
+    }
     // Navigator.of(context).pushNamed(ProfileScreen.routeName);
   }
 
@@ -109,7 +130,7 @@ class _EditProfileState extends State<EditProfile> {
       ),
     );
 
-    var loginMode = Provider.of<UserData>(context, listen: false).loginMode;
+    // var loginMode = Provider.of<UserData>(context, listen: false).loginMode;
 
     return Scaffold(
       // extendBodyBehindAppBar: true,

@@ -27,7 +27,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         .collection('users')
         .doc(user!.uid)
         .get();
-    setState(() {});
+    setState(
+      () {},
+    );
   }
 
   var isInit = true;
@@ -255,14 +257,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
             left: 30,
             right: 30,
             child: CircleAvatar(
-                radius: 60,
-                foregroundColor: Colors.white,
-                backgroundColor: Colors.white,
-                child: loginMode == 0
-                    ? userDetails!['image'] != null
-                        ? Image.asset('assets/images/default.png') //Image.file(userDetails!['image'])
-                        : Image.asset('assets/images/default.png')
-                    : Image.network(userDetails!['image'])),
+              radius: 60,
+              foregroundColor: Colors.white,
+              backgroundColor: Colors.white,
+              child: loginMode == 0
+                  ? userDetails!['image'] != null
+                      ? Image.asset(
+                          'assets/images/default.png') //Image.file(userDetails!['image'])
+                      : Image.asset('assets/images/default.png')
+                  : Image.network(userDetails!['image']),
+            ),
           )
         ],
       ),
