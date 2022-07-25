@@ -32,93 +32,97 @@ class SplashContainer extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.max,
         children: [
-          Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Image.asset(imageAsset, fit: BoxFit.cover),
-                // const SizedBox(height: 10),
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    color: textColor,
-                    fontSize: 29,
-                  ),
-                ),
-                Text(
-                  subtitle,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w400,
-                    color: textColor,
-                    fontSize: 15,
-                  ),
-                ),
-                const SizedBox(height: 10),
-
-                isLast
-                    ? ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          primary: primaryColor,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        icon: const Icon(
-                          Icons.emoji_emotions,
-                          color: Colors.white,
-                        ),
-                        label: const Text(
-                          'Start exploring',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        onPressed: () {
-                          FirebaseAuth.instance
-                              .authStateChanges()
-                              .listen((User? user) {
-                            if (user != null) {
-                              // user is signed in
-                              Navigator.of(
-                                context,
-                              ).pushNamed(
-                                HomeScreen.routeName,
-                              );
-                            } else {
-                              // user is not signed in
-                              Navigator.of(
-                                context,
-                              ).pushNamed(
-                                AuthScreen.routeName,
-                              );
-                            }
-                          });
-                        })
-                    : const Text(''),
-              ]),
-          isFirst
-              ? Padding(
-                  padding: const EdgeInsets.only(top: 20.0),
-                  child: Align(
-                    alignment: Alignment.bottomLeft,
-                    child: Wrap(
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: [
-                        Image.asset(
-                          'assets/images/swipeRight.gif',
-                          width: 100,
-                        ),
-                        const Text(
-                          '...swipe right to skip',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 15,
-                            color: primaryColor,
-                          ),
-                        ),
-                      ],
+          Expanded(
+            flex:6,
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Image.asset(imageAsset, fit: BoxFit.cover),
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      color: textColor,
+                      fontSize: 29,
                     ),
                   ),
-                )
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      color: textColor,
+                      fontSize: 15,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+          
+                  isLast
+                      ? ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            primary: primaryColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          icon: const Icon(
+                            Icons.emoji_emotions,
+                            color: Colors.white,
+                          ),
+                          label: const Text(
+                            'Start exploring',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          onPressed: () {
+                            FirebaseAuth.instance
+                                .authStateChanges()
+                                .listen((User? user) {
+                              if (user != null) {
+                                // user is signed in
+                                Navigator.of(
+                                  context,
+                                ).pushNamed(
+                                  HomeScreen.routeName,
+                                );
+                              } else {
+                                // user is not signed in
+                                Navigator.of(
+                                  context,
+                                ).pushNamed(
+                                  AuthScreen.routeName,
+                                );
+                              }
+                            });
+                          })
+                      : const Text(''),
+                ]),
+          ),
+          isFirst
+              ? Expanded(
+                child: Padding(
+                    padding: const EdgeInsets.only(top: 20.0),
+                    child: Align(
+                      alignment: Alignment.bottomLeft,
+                      child: Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          Image.asset(
+                            'assets/images/swipeRight.gif',
+                            width: 100,
+                          ),
+                          const Text(
+                            '...swipe right to skip',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 15,
+                              color: primaryColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+              )
               : isLast
                   ? const Text('')
                   : Padding(

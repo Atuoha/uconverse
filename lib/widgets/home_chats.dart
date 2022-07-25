@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../constants/color.dart';
 import '../screens/chat_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class HomeChats extends StatelessWidget {
   HomeChats({Key? key}) : super(key: key);
@@ -41,6 +42,13 @@ class HomeChats extends StatelessWidget {
                   ) {
                     final DocumentSnapshot documentSnapshot =
                         snapshot.data!.docs[index];
+                    DateTime toDate(time) {
+                      return DateTime.fromMicrosecondsSinceEpoch(
+                          time.microsecondsSinceEpoch);
+                    }
+
+                    var date = toDate(documentSnapshot['createdAt']);
+                    var chatTime = DateFormat.jm().format(date);
                     return GestureDetector(
                       onTap: () => Navigator.of(context).pushNamed(
                         ChatScreen.routeName,
@@ -89,7 +97,7 @@ class HomeChats extends StatelessWidget {
                                       width: MediaQuery.of(context).size.width *
                                           0.50,
                                       child: Text(
-                                        documentSnapshot['text'],
+                                        documentSnapshot['msg'],
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(
@@ -103,16 +111,16 @@ class HomeChats extends StatelessWidget {
                               ],
                             ),
                             Column(
-                              children: const [
+                              children: [
                                 Text(
-                                  '12:00',
-                                  style: TextStyle(
+                                  chatTime.toString(),
+                                  style: const TextStyle(
                                     fontSize: 10,
                                     color: Colors.blueGrey,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                SizedBox(height: 10),
+                                const SizedBox(height: 10),
                                 // msgData.chats[index].unread
                                 //     ? Container(
                                 //         height: 20,

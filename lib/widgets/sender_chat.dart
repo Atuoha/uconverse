@@ -1,9 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class SenderChat extends StatelessWidget {
   final String message;
-  final String time;
+  final Timestamp time;
 
   const SenderChat({
     Key? key,
@@ -36,19 +37,19 @@ class SenderChat extends StatelessWidget {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(10, 20, 20, 20),
+          padding: const EdgeInsets.fromLTRB(10, 10, 20, 5),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                chatTime,
+                chatTime.toString(),
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 12,
                 ),
               ),
               const SizedBox(
-                height: 10,
+                height: 5,
               ),
               SizedBox(
                 width: MediaQuery.of(context).size.width * 0.60,

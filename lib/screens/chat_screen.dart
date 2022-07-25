@@ -20,7 +20,8 @@ class _ChatScreenState extends State<ChatScreen> {
       .collection('chats/i9IFa7EAlYRZvzQkdUVQ/messages');
 
   final _textController = TextEditingController();
-  final user = FirebaseAuth.instance.currentUser;
+  
+                                 
 
   @override
   void initState() {
@@ -31,13 +32,17 @@ class _ChatScreenState extends State<ChatScreen> {
     });
   }
 
-  void sendChat() {
-    var chat = _textController.text;
+  void sendChat() async{
+    FocusScope.of(context).unfocus(); // closing the keyboard
+    var chat = _textController.text.trim();
+    final user =  FirebaseAuth.instance.currentUser;
+  final userData = await FirebaseFirestore.instance.collection('users').doc(user!.uid).get();
     if (chat.isNotEmpty) {
       _chats.add({
         'msg': chat,
-        'userId': user!.uid,
+        'userId': user.uid,
         'createdAt': Timestamp.now(),
+        'username': userData['username']
       });
       _textController.clear();
     }
@@ -59,7 +64,9 @@ class _ChatScreenState extends State<ChatScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CircleAvatar(
-              backgroundImage: AssetImage(userData.findById(2).imageUrl,),
+              backgroundImage: AssetImage(
+                userData.findById(2).imageUrl,
+              ),
             ),
             const SizedBox(width: 10),
             Text(
@@ -135,17 +142,22 @@ class _ChatScreenState extends State<ChatScreen> {
                 Expanded(
                   child: SizedBox(
                     child: StreamBuilder(
-                      stream: _chats.snapshots(),
+                      stream: _chats.orderBy('createdAt').snapshots(),
                       builder:
                           (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                         if (snapshot.hasData) {
                           return ListView.builder(
+                            // reverse:true,
                             padding: const EdgeInsets.only(top: 10),
                             itemCount: snapshot.data!.docs.length,
                             itemBuilder: (context, index) {
                               final DocumentSnapshot documentSnapshot =
                                   snapshot.data!.docs[index];
-                              return documentSnapshot['userId'] == user!.uid
+
+                              
+                              
+
+                              return documentSnapshot['userId'] == FirebaseAuth.instance.currentUser!.uid
                                   ? SenderChat(
                                       message: documentSnapshot['msg'],
                                       time: documentSnapshot['createdAt'],
@@ -153,6 +165,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                   : ReceiverChat(
                                       message: documentSnapshot['msg'],
                                       time: documentSnapshot['createdAt'],
+                                      username: documentSnapshot['username'],
                                     );
                             },
                           );

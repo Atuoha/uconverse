@@ -4,6 +4,7 @@ import '../widgets/home_chats.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../widgets/category_container.dart';
+import 'chat_screen.dart';
 import 'profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -26,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: accentColor,
         onPressed: () {
-          // Navigator.of(context).
+          Navigator.of(context).pushNamed(ChatScreen.routeName);
         },
         child: const Icon(
           Icons.add,
@@ -84,7 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               child: Column(
-                children:  [
+                children: [
                   const FavoriteContacts(),
                   HomeChats(),
                 ],

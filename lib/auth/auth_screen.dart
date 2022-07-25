@@ -127,7 +127,7 @@ class _AuthScreenState extends State<AuthScreen> {
         // sending credential to firebase when email account is associated
         await FirebaseFirestore.instance
             .collection('users')
-            .doc(loginResult.accessToken!.userId)
+            .doc(loginResult.accessToken!.token)
             .set(
           {
             "username": user['name'],

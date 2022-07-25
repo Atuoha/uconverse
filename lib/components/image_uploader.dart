@@ -1,12 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../constants/color.dart';
-import 'package:path_provider/path_provider.dart' as syspath;
-import 'package:path/path.dart' as path;
+// import 'package:path_provider/path_provider.dart' as syspath;
+// import 'package:path/path.dart' as path;
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 class ImageUploader extends StatefulWidget {
-  final Function(File) selectImage;
+  final Function(XFile) selectImage;
   const ImageUploader({
     Key? key,
     required this.selectImage,
@@ -19,6 +21,34 @@ class ImageUploader extends StatefulWidget {
 enum Source { camera, gallery }
 
 class _ImageUploaderState extends State<ImageUploader> {
+  var userDetails;
+  var user = FirebaseAuth.instance.currentUser;
+
+  void loadProfileData() async {
+    userDetails = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user!.uid)
+        .get();
+    setState(() {});
+  }
+
+  var isInit = true;
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (isInit) {
+      loadProfileData();
+    }
+    setState(() {
+      isInit = false;
+    });
+    super.didChangeDependencies();
+  }
+
   XFile? uploadImage;
 
   Future seletImage(Source source) async {
@@ -27,7 +57,7 @@ class _ImageUploaderState extends State<ImageUploader> {
       case Source.camera:
         pickedImage = await ImagePicker().pickImage(
           source: ImageSource.camera,
-          maxWidth: 600,
+          maxWidth: 900,
         );
         break;
 
@@ -44,11 +74,7 @@ class _ImageUploaderState extends State<ImageUploader> {
     setState(() {
       uploadImage = pickedImage;
     });
-    var appDir = await syspath.getApplicationDocumentsDirectory();
-    var fileName = path.basename(pickedImage.path);
-    File file = File(pickedImage.path);
-    final savedImage = await file.copy('${appDir.path}/$fileName');
-    widget.selectImage(savedImage);
+    widget.selectImage(uploadImage!);
   }
 
   @override
@@ -121,10 +147,10 @@ class _ImageUploaderState extends State<ImageUploader> {
           ),
           child: uploadImage != null
               ? Image.file(File(uploadImage!.path))
-              : Image.asset(
-                  'assets/images/default.png',
-                  fit: BoxFit.cover,
-                ),
+              : userDetails!['image'] != null
+                  ? Image.asset(
+                      'assets/images/default.png') //Image.file(userDetails!['image'])
+                  : Image.asset('assets/images/default.png'),
         ),
         ElevatedButton.icon(
           style: ElevatedButton.styleFrom(

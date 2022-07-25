@@ -1,15 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class ReceiverChat extends StatelessWidget {
   final String message;
-  final String time;
+  final Timestamp time;
+  final String username;
 
-  const ReceiverChat({
-    Key? key,
-    required this.message,
-    required this.time,
-  }) : super(key: key);
+  const ReceiverChat(
+      {Key? key,
+      required this.message,
+      required this.time,
+      required this.username,})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -38,31 +41,34 @@ class ReceiverChat extends StatelessWidget {
               ),
             ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20.0,
-                vertical: 20,
-              ),
+              padding: const EdgeInsets.fromLTRB(10, 10, 20, 5),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    chatTime,
+                    chatTime.toString(),
                     style: const TextStyle(
                       color: Colors.grey,
                       fontSize: 12,
                     ),
                   ),
                   const SizedBox(
-                    height: 10,
+                    height: 5,
                   ),
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.60,
-                    child: Text(
-                      message,
-                      style: const TextStyle(
-                        color: Colors.blueGrey,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                       Text(username),
+                        Text(
+                          message,
+                          style: const TextStyle(
+                            color: Colors.blueGrey,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],

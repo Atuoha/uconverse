@@ -1,9 +1,17 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:uconverse/components/image_uploader.dart';
 import 'package:uconverse/constants/color.dart';
 import 'package:uconverse/screens/profile_screen.dart';
+
+import '../providers/users.dart';
 
 class EditProfile extends StatefulWidget {
   static const routeName = 'edit-profile';
@@ -19,12 +27,36 @@ class _EditProfileState extends State<EditProfile> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   var obscure = true;
-  File? selectedImage;
+  XFile? selectedImage;
 
-  void selectImage(File image) {
+  void selectImage(XFile image) {
     setState(() {
       selectedImage = image;
     });
+  }
+
+  // ignore: prefer_typing_uninitialized_variables
+  var userDetails;
+  var user = FirebaseAuth.instance.currentUser;
+
+  void loadProfileData() async {
+    userDetails = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user!.uid)
+        .get();
+    setState(() {});
+  }
+
+  var isInit = true;
+  @override
+  void didChangeDependencies() {
+    if (isInit) {
+      loadProfileData();
+    }
+    setState(() {
+      isInit = false;
+    });
+    super.didChangeDependencies();
   }
 
   @override
@@ -35,16 +67,38 @@ class _EditProfileState extends State<EditProfile> {
     super.initState();
   }
 
-  void _updateProfile(BuildContext context) {
+  Future<void> _updateProfile(BuildContext context) async {
     final valid = _formKey.currentState!.validate();
     FocusScope.of(context).unfocus();
     _formKey.currentState!.save();
     if (!valid) {
       return;
     }
-  
-    // ...
-    Navigator.of(context).pushNamed(ProfileScreen.routeName);
+
+    final storageRef =
+        FirebaseStorage.instance.ref().child('user_images').child(user!.uid);
+    File file = File(selectedImage!.path);
+
+    try {
+      await storageRef.putFile(file);
+    } on FirebaseException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(
+          'error occurred ${e.message}',
+          style: const TextStyle(
+            color: primaryColor,
+          ),
+        ),
+        backgroundColor: accentColor,
+        action: SnackBarAction(
+          onPressed: () => Navigator.of(context).pop(),
+          label: 'Dismiss',
+          textColor: buttonColor,
+        ),
+      ));
+    }
+
+    // Navigator.of(context).pushNamed(ProfileScreen.routeName);
   }
 
   @override
@@ -54,6 +108,8 @@ class _EditProfileState extends State<EditProfile> {
         statusBarColor: Colors.transparent,
       ),
     );
+
+    var loginMode = Provider.of<UserData>(context, listen: false).loginMode;
 
     return Scaffold(
       // extendBodyBehindAppBar: true,
@@ -96,13 +152,16 @@ class _EditProfileState extends State<EditProfile> {
                 child: Column(
                   children: [
                     TextFormField(
+                      // initialValue: userDetails!['username'],
                       textInputAction: TextInputAction.next,
                       autofocus: true,
                       controller: _usernameController,
-                      decoration: const InputDecoration(
-                        hintText: 'placeholder',
-                        labelText: 'Username',
-                        icon: Icon(Icons.account_box),
+                      decoration: InputDecoration(
+                        hintText:
+                            userDetails == null ? '' : userDetails!['username'],
+                        labelText:
+                            userDetails == null ? '' : userDetails!['username'],
+                        icon: const Icon(Icons.account_box),
                       ),
                       validator: (value) {
                         if (value!.isEmpty) {
@@ -115,14 +174,17 @@ class _EditProfileState extends State<EditProfile> {
                     ),
                     const SizedBox(height: 20),
                     TextFormField(
+                      // initialValue: userDetails!['email'],
                       textInputAction: TextInputAction.next,
                       autofocus: true,
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
-                      decoration: const InputDecoration(
-                        hintText: 'placeholder@gmail.com',
-                        labelText: 'Email',
-                        icon: Icon(
+                      decoration: InputDecoration(
+                        hintText:
+                            userDetails == null ? '' : userDetails!['email'],
+                        labelText:
+                            userDetails == null ? '' : userDetails!['email'],
+                        icon: const Icon(
                           Icons.email,
                         ),
                       ),

@@ -1,8 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:uconverse/screens/edit_profile.dart';
-
 import '../auth/auth_screen.dart';
 import '../constants/color.dart';
 import 'package:flutter/cupertino.dart';
@@ -10,9 +10,42 @@ import 'package:flutter/material.dart';
 
 import '../providers/providers.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   static const routeName = 'profile';
   const ProfileScreen({Key? key}) : super(key: key);
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  var userDetails;
+  var user = FirebaseAuth.instance.currentUser;
+
+  void loadProfileData() async {
+    userDetails = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user!.uid)
+        .get();
+    setState(() {});
+  }
+
+  var isInit = true;
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (isInit) {
+      loadProfileData();
+    }
+    setState(() {
+      isInit = false;
+    });
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,10 +60,10 @@ class ProfileScreen extends StatelessWidget {
       );
     }
 
-    var user = FirebaseAuth.instance.currentUser;
+    // var user = FirebaseAuth.instance.currentUser;
+    var loginMode = Provider.of<UserData>(context, listen: false).loginMode;
 
     Future showLogoutModal() {
-      var loginMode = Provider.of<UserData>(context, listen: false).loginMode;
       String titleMode;
       if (loginMode == 0) {
         // email - password auth type
@@ -45,47 +78,48 @@ class ProfileScreen extends StatelessWidget {
       return showDialog(
         context: context,
         builder: (context) => AlertDialog(
-            title: const Center(
-              child: Text(
-                'Logout Account?',
-                style: TextStyle(
-                  color: primaryColor,
-                  fontWeight: FontWeight.bold,
-                ),
+          title: const Center(
+            child: Text(
+              'Logout Account?',
+              style: TextStyle(
+                color: primaryColor,
+                fontWeight: FontWeight.bold,
               ),
             ),
-            content: Text('You are currently logged in using $titleMode.',
-                textAlign: TextAlign.center),
-            actions: [
-              ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  primary: accentColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+          ),
+          content: Text('You are currently logged in using $titleMode.',
+              textAlign: TextAlign.center),
+          actions: [
+            ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                primary: accentColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                onPressed: () async {
-                  if (loginMode == 0) {
-                    // logout email - password auth type
-                    await FirebaseAuth.instance.signOut();
-                  } else if (loginMode == 1) {
-                    // logout google auth type
-                    await FirebaseAuth.instance.signOut();
-                  } else {
-                    // logout facebook auth type
-                    await FacebookAuth.instance.logOut();
-                    await FirebaseAuth.instance.signOut();
-                  }
-                },
-                label: const Text(
-                  'Logout',
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-                icon: const Icon(Icons.logout),
               ),
-            ]),
+              onPressed: () async {
+                if (loginMode == 0) {
+                  // logout email - password auth type
+                  await FirebaseAuth.instance.signOut();
+                } else if (loginMode == 1) {
+                  // logout google auth type
+                  await FirebaseAuth.instance.signOut();
+                } else {
+                  // logout facebook auth type
+                  await FacebookAuth.instance.logOut();
+                  await FirebaseAuth.instance.signOut();
+                }
+              },
+              label: const Text(
+                'Logout',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+              icon: const Icon(Icons.logout),
+            ),
+          ],
+        ),
       );
     }
 
@@ -160,22 +194,27 @@ class ProfileScreen extends StatelessWidget {
                                   color: buttonColor,
                                 ),
                               ),
-                              GestureDetector(
-                                onTap: () => Navigator.of(context).pushNamed(
-                                  EditProfile.routeName,
-                                ),
-                                child: const Icon(
-                                  CupertinoIcons.create,
-                                  color: buttonColor,
-                                ),
-                              )
+
+                              // allowing profile edit if loginMode is email and password
+                              loginMode == 0
+                                  ? GestureDetector(
+                                      onTap: () =>
+                                          Navigator.of(context).pushNamed(
+                                        EditProfile.routeName,
+                                      ),
+                                      child: const Icon(
+                                        CupertinoIcons.create,
+                                        color: buttonColor,
+                                      ),
+                                    )
+                                  : const Text('')
                             ],
                           ),
                         ),
                         const SizedBox(height: 20),
-                        const Text(
-                          'Peace Emeghara',
-                          style: TextStyle(
+                        Text(
+                          userDetails!['username'],
+                          style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
@@ -183,9 +222,9 @@ class ProfileScreen extends StatelessWidget {
                         const SizedBox(
                           height: 5,
                         ),
-                        const Text(
-                          'peace_emeghara@gmail.com',
-                          style: TextStyle(
+                        Text(
+                          userDetails!['email'],
+                          style: const TextStyle(
                             fontSize: 15,
                           ),
                         ),
@@ -216,13 +255,14 @@ class ProfileScreen extends StatelessWidget {
             left: 30,
             right: 30,
             child: CircleAvatar(
-              radius: 60,
-              foregroundColor: Colors.white,
-              backgroundColor: Colors.white,
-              child: Image.asset(
-                'assets/images/default.png',
-              ),
-            ),
+                radius: 60,
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.white,
+                child: loginMode == 0
+                    ? userDetails!['image'] != null
+                        ? Image.asset('assets/images/default.png') //Image.file(userDetails!['image'])
+                        : Image.asset('assets/images/default.png')
+                    : Image.network(userDetails!['image'])),
           )
         ],
       ),
