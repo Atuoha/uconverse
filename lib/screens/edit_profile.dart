@@ -5,13 +5,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:provider/provider.dart';
 import 'package:uconverse/components/image_uploader.dart';
 import 'package:uconverse/constants/color.dart';
-import 'package:uconverse/screens/profile_screen.dart';
-
-import '../providers/users.dart';
 
 class EditProfile extends StatefulWidget {
   static const routeName = 'edit-profile';
@@ -38,13 +33,18 @@ class _EditProfileState extends State<EditProfile> {
   // ignore: prefer_typing_uninitialized_variables
   var userDetails;
   var user = FirebaseAuth.instance.currentUser;
+  var _isLoading = true;
 
   void loadProfileData() async {
     userDetails = await FirebaseFirestore.instance
         .collection('users')
         .doc(user!.uid)
         .get();
-    setState(() {});
+    setState(
+      () {
+        _isLoading = false;
+      },
+    );
   }
 
   var isInit = true;
@@ -106,12 +106,13 @@ class _EditProfileState extends State<EditProfile> {
       if (selectedImage != null) {
         await storageRef.putFile(file!);
       }
+      var downloadLink = await storageRef.getDownloadURL();
       await user!.updateEmail(_emailController.text.trim());
       await user!.updatePassword(_passwordController.text.trim());
       await FirebaseFirestore.instance.collection('users').doc(user!.uid).set({
         'username': _usernameController.text.trim(),
         'email': _emailController.text.trim(),
-        'image': '',
+        'image': downloadLink,
         'login-mode': 'email',
       });
     } on FirebaseException catch (e) {
@@ -167,95 +168,105 @@ class _EditProfileState extends State<EditProfile> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              ImageUploader(selectImage: selectImage),
-              Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    TextFormField(
-                      // initialValue: userDetails!['username'],
-                      textInputAction: TextInputAction.next,
-                      autofocus: true,
-                      controller: _usernameController,
-                      decoration: InputDecoration(
-                        hintText:
-                            userDetails == null ? '' : userDetails!['username'],
-                        labelText:
-                            userDetails == null ? '' : userDetails!['username'],
-                        icon: const Icon(Icons.account_box),
-                      ),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Username can not be empty!';
-                        } else if (value.length < 3) {
-                          return 'Username should be up 3 characters!';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 20),
-                    TextFormField(
-                      // initialValue: userDetails!['email'],
-                      textInputAction: TextInputAction.next,
-                      autofocus: true,
-                      controller: _emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                        hintText:
-                            userDetails == null ? '' : userDetails!['email'],
-                        labelText:
-                            userDetails == null ? '' : userDetails!['email'],
-                        icon: const Icon(
-                          Icons.email,
+              if (_isLoading) ...[
+                const Center(
+                  child: CircularProgressIndicator(
+                    color: primaryColor,
+                  ),
+                )
+              ] else ...[
+                ImageUploader(selectImage: selectImage),
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        // initialValue: userDetails!['username'],
+                        textInputAction: TextInputAction.next,
+                        autofocus: true,
+                        controller: _usernameController,
+                        decoration: InputDecoration(
+                          hintText: userDetails == null
+                              ? ''
+                              : userDetails!['username'],
+                          labelText: userDetails == null
+                              ? ''
+                              : userDetails!['username'],
+                          icon: const Icon(Icons.account_box),
                         ),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Username can not be empty!';
+                          } else if (value.length < 3) {
+                            return 'Username should be up 3 characters!';
+                          }
+                          return null;
+                        },
                       ),
-                      validator: (value) {
-                        if (value!.isEmpty || !value.contains('@')) {
-                          return 'Enter valid email address!';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 20),
-                    TextFormField(
-                      onFieldSubmitted: (value) {},
-                      obscureText: obscure,
-                      textInputAction: TextInputAction.done,
-                      autofocus: true,
-                      controller: _passwordController,
-                      decoration: InputDecoration(
-                        suffixIcon: _passwordController.text.isNotEmpty
-                            ? IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    obscure = !obscure;
-                                  });
-                                },
-                                icon: Icon(
-                                  obscure
-                                      ? Icons.visibility
-                                      : Icons.visibility_off,
-                                ),
-                              )
-                            : const Text(''),
-                        hintText: '********',
-                        labelText: 'Password',
-                        icon: const Icon(
-                          Icons.key,
+                      const SizedBox(height: 20),
+                      TextFormField(
+                        // initialValue: userDetails!['email'],
+                        textInputAction: TextInputAction.next,
+                        autofocus: true,
+                        controller: _emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: InputDecoration(
+                          hintText:
+                              userDetails == null ? '' : userDetails!['email'],
+                          labelText:
+                              userDetails == null ? '' : userDetails!['email'],
+                          icon: const Icon(
+                            Icons.email,
+                          ),
                         ),
+                        validator: (value) {
+                          if (value!.isEmpty || !value.contains('@')) {
+                            return 'Enter valid email address!';
+                          }
+                          return null;
+                        },
                       ),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Password can\'t be empty';
-                        } else if (value.length < 8) {
-                          return 'Password is not strong enough!';
-                        }
-                        return null;
-                      },
-                    ),
-                  ],
-                ),
-              )
+                      const SizedBox(height: 20),
+                      TextFormField(
+                        onFieldSubmitted: (value) {},
+                        obscureText: obscure,
+                        textInputAction: TextInputAction.done,
+                        autofocus: true,
+                        controller: _passwordController,
+                        decoration: InputDecoration(
+                          suffixIcon: _passwordController.text.isNotEmpty
+                              ? IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      obscure = !obscure;
+                                    });
+                                  },
+                                  icon: Icon(
+                                    obscure
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
+                                  ),
+                                )
+                              : const Text(''),
+                          hintText: '********',
+                          labelText: 'Password',
+                          icon: const Icon(
+                            Icons.key,
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Password can\'t be empty';
+                          } else if (value.length < 8) {
+                            return 'Password is not strong enough!';
+                          }
+                          return null;
+                        },
+                      ),
+                    ],
+                  ),
+                )
+              ]
             ],
           ),
         ),

@@ -21,15 +21,19 @@ class ImageUploader extends StatefulWidget {
 enum Source { camera, gallery }
 
 class _ImageUploaderState extends State<ImageUploader> {
+  // ignore: prefer_typing_uninitialized_variables
   var userDetails;
   var user = FirebaseAuth.instance.currentUser;
+  var _isLoading = true;
 
   void loadProfileData() async {
     userDetails = await FirebaseFirestore.instance
         .collection('users')
         .doc(user!.uid)
         .get();
-    setState(() {});
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   var isInit = true;
@@ -145,12 +149,15 @@ class _ImageUploaderState extends State<ImageUploader> {
             color: Colors.white,
             shape: BoxShape.circle,
           ),
-          child: uploadImage != null
-              ? Image.file(File(uploadImage!.path))
-              : userDetails!['image'] != null
-                  ? Image.asset(
-                      'assets/images/default.png') //Image.file(userDetails!['image'])
-                  : Image.asset('assets/images/default.png'),
+          child: _isLoading
+              ? const CircularProgressIndicator(
+                  color: primaryColor,
+                )
+              : uploadImage != null
+                  ? Image.file(File(uploadImage!.path))
+                  : userDetails!['image'] != ''
+                      ? Image.network(userDetails!['image'])
+                      : Image.asset('assets/images/default.png'),
         ),
         ElevatedButton.icon(
           style: ElevatedButton.styleFrom(

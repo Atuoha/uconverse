@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:uconverse/screens/edit_profile.dart';
-import '../auth/auth_screen.dart';
 import '../constants/color.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -19,8 +18,10 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  // ignore: prefer_typing_uninitialized_variables
   var userDetails;
   var user = FirebaseAuth.instance.currentUser;
+  var _isLoading = true;
 
   void loadProfileData() async {
     userDetails = await FirebaseFirestore.instance
@@ -28,7 +29,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         .doc(user!.uid)
         .get();
     setState(
-      () {},
+      () {
+        _isLoading = false;
+      },
     );
   }
 
@@ -128,146 +131,151 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          const Positioned(
-            top: 50,
-            right: 20,
-            child: Text(
-              'Profile',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 25,
-                color: accentColor,
-              ),
-            ),
-          ),
-          Positioned(
-            top: 35,
-            left: 0,
-            child: IconButton(
-              onPressed: () => Navigator.of(context).pop(),
-              icon: const Icon(
-                Icons.chevron_left,
-                size: 34,
-                color: accentColor,
-              ),
-            ),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(30),
-                  topRight: Radius.circular(30),
-                ),
+          if (_isLoading) ...[
+            const Center(
+              child: CircularProgressIndicator(
                 color: primaryColor,
               ),
-              height: 500,
-              width: double.infinity,
-            ),
-          ),
-          Positioned(
-            top: 120,
-            left: 20,
-            right: 20,
-            child: Card(
-              elevation: 5,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
+            )
+          ] else ...[
+            const Positioned(
+              top: 50,
+              right: 20,
+              child: Text(
+                'Profile',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 25,
+                  color: accentColor,
+                ),
               ),
+            ),
+            Positioned(
+              top: 35,
+              left: 0,
+              child: IconButton(
+                onPressed: () => Navigator.of(context).pop(),
+                icon: const Icon(
+                  Icons.chevron_left,
+                  size: 34,
+                  color: accentColor,
+                ),
+              ),
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
               child: Container(
-                  height: 500,
-                  color: Colors.transparent,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            top: 15.0,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              GestureDetector(
-                                onTap: () => showLogoutModal(),
-                                child: const Icon(
-                                  Icons.logout,
-                                  color: buttonColor,
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(30),
+                    topRight: Radius.circular(30),
+                  ),
+                  color: primaryColor,
+                ),
+                height: 500,
+                width: double.infinity,
+              ),
+            ),
+            Positioned(
+              top: 120,
+              left: 20,
+              right: 20,
+              child: Card(
+                elevation: 5,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Container(
+                    height: 500,
+                    color: Colors.transparent,
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              top: 15.0,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                GestureDetector(
+                                  onTap: () => showLogoutModal(),
+                                  child: const Icon(
+                                    Icons.logout,
+                                    color: buttonColor,
+                                  ),
                                 ),
-                              ),
 
-                              // allowing profile edit if loginMode is email and password
-                              loginMode == 0
-                                  ? GestureDetector(
-                                      onTap: () =>
-                                          Navigator.of(context).pushNamed(
-                                        EditProfile.routeName,
-                                      ),
-                                      child: const Icon(
-                                        CupertinoIcons.create,
-                                        color: buttonColor,
-                                      ),
-                                    )
-                                  : const Text('')
-                            ],
+                                // allowing profile edit if loginMode is email and password
+                                loginMode == 0
+                                    ? GestureDetector(
+                                        onTap: () =>
+                                            Navigator.of(context).pushNamed(
+                                          EditProfile.routeName,
+                                        ),
+                                        child: const Icon(
+                                          CupertinoIcons.create,
+                                          color: buttonColor,
+                                        ),
+                                      )
+                                    : const Text('')
+                              ],
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 20),
-                        Text(
-                          userDetails!['username'],
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
+                          const SizedBox(height: 20),
+                          Text(
+                            userDetails!['username'],
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          userDetails!['email'],
-                          style: const TextStyle(
-                            fontSize: 15,
+                          const SizedBox(
+                            height: 5,
                           ),
-                        ),
-                        const Divider(),
-                        customTile(
-                          'Acccount',
-                          Icons.person,
-                        ),
-                        customTile(
-                          'Review',
-                          Icons.star,
-                        ),
-                        customTile(
-                          'Share',
-                          Icons.share,
-                        ),
-                        customTile(
-                          'Info',
-                          Icons.info,
-                        ),
-                      ],
-                    ),
-                  )),
+                          Text(
+                            userDetails!['email'],
+                            style: const TextStyle(
+                              fontSize: 15,
+                            ),
+                          ),
+                          const Divider(),
+                          customTile(
+                            'Acccount',
+                            Icons.person,
+                          ),
+                          customTile(
+                            'Review',
+                            Icons.star,
+                          ),
+                          customTile(
+                            'Share',
+                            Icons.share,
+                          ),
+                          customTile(
+                            'Info',
+                            Icons.info,
+                          ),
+                        ],
+                      ),
+                    )),
+              ),
             ),
-          ),
-          Positioned(
-            top: 65,
-            left: 30,
-            right: 30,
-            child: CircleAvatar(
-              radius: 60,
-              foregroundColor: Colors.white,
-              backgroundColor: Colors.white,
-              child: loginMode == 0
-                  ? userDetails!['image'] != null
-                      ? Image.asset(
-                          'assets/images/default.png') //Image.file(userDetails!['image'])
-                      : Image.asset('assets/images/default.png')
-                  : Image.network(userDetails!['image']),
-            ),
-          )
+            Positioned(
+              top: 65,
+              left: 30,
+              right: 30,
+              child: CircleAvatar(
+                radius: 60,
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.white,
+                child: userDetails!['image'] != ''
+                    ? Image.network(userDetails!['image'])
+                    : Image.asset('assets/images/default.png'),
+              ),
+            )
+          ]
         ],
       ),
     );
