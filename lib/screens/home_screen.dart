@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '/constants/color.dart';
 import '../widgets/favorite_contacts.dart';
 import '../widgets/home_chats.dart';
@@ -16,6 +18,34 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  var user = FirebaseAuth.instance.currentUser;
+  // ignore: prefer_typing_uninitialized_variables
+  var userDetails;
+  var _isLoading = true;
+  var _isInit = true;
+  void _loadUserDetails() async{
+    userDetails = await FirebaseFirestore.instance.collection('users').doc(user!.uid).get();
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      _loadUserDetails();
+    }
+    setState(() {
+      _isInit = false;
+    });
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
@@ -64,10 +94,14 @@ class _HomeScreenState extends State<HomeScreen> {
               onTap: () => Navigator.of(context).pushNamed(
                 ProfileScreen.routeName,
               ),
-              child: Image.asset(
-                'assets/images/default.png',
-                width: 40,
-              ),
+              child: _isLoading
+                  ? const CircularProgressIndicator(color: accentColor)
+                  : userDetails['image'] == ''
+                      ? Image.asset(
+                          'assets/images/default.png',
+                          width: 40,
+                        )
+                      : Image.network(userDetails['image']),
             ),
           )
         ],

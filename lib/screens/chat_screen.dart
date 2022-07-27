@@ -166,6 +166,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                       message: documentSnapshot['msg'],
                                       time: documentSnapshot['createdAt'],
                                       username: documentSnapshot['username'],
+                                      imageAsset: documentSnapshot['image'],
                                     );
                             },
                           );

@@ -6,13 +6,15 @@ class ReceiverChat extends StatelessWidget {
   final String message;
   final Timestamp time;
   final String username;
+  final String imageAsset;
 
-  const ReceiverChat(
-      {Key? key,
-      required this.message,
-      required this.time,
-      required this.username,})
-      : super(key: key);
+  const ReceiverChat({
+    Key? key,
+    required this.message,
+    required this.time,
+    required this.username,
+    required this.imageAsset,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +62,13 @@ class ReceiverChat extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                       Text(username),
+                        CircleAvatar(
+                          radius:20,
+                          child: imageAsset.isEmpty
+                              ? Image.network(imageAsset)
+                              : Image.asset('assets/images/default.png'),
+                        ),
+                        Text(username),
                         Text(
                           message,
                           style: const TextStyle(
