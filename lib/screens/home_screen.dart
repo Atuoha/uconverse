@@ -23,8 +23,11 @@ class _HomeScreenState extends State<HomeScreen> {
   var userDetails;
   var _isLoading = true;
   var _isInit = true;
-  void _loadUserDetails() async{
-    userDetails = await FirebaseFirestore.instance.collection('users').doc(user!.uid).get();
+  void _loadUserDetails() async {
+    userDetails = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user!.uid)
+        .get();
     setState(() {
       _isLoading = false;
     });
@@ -95,11 +98,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 ProfileScreen.routeName,
               ),
               child: _isLoading
-                  ? const CircularProgressIndicator(color: accentColor)
+                  ? const CircularProgressIndicator(
+                      color: accentColor,
+                    )
                   : userDetails['image'] == ''
-                      ? Image.asset(
-                          'assets/images/default.png',
-                          width: 40,
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(30),
+                          child: Image.asset(
+                            'assets/images/default.png',
+                            width: 40,
+                          ),
                         )
                       : Image.network(userDetails['image']),
             ),

@@ -44,7 +44,8 @@ class _ChatScreenState extends State<ChatScreen> {
         'msg': chat,
         'userId': user.uid,
         'createdAt': Timestamp.now(),
-        'username': userDetails['username']
+        'username': userDetails['username'],
+        'image': userDetails['image']
       });
       _textController.clear();
     }

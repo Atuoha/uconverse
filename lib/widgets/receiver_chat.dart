@@ -78,7 +78,7 @@ class ReceiverChat extends StatelessWidget {
             ),
           ),
           const SizedBox(
-            width: 15,
+            width: 5,
           ),
           CircleAvatar(
             radius: 20,
