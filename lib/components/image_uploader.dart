@@ -150,14 +150,40 @@ class _ImageUploaderState extends State<ImageUploader> {
             shape: BoxShape.circle,
           ),
           child: _isLoading
-              ? const CircularProgressIndicator(
-                  color: primaryColor,
+              ? const CircleAvatar(
+                  backgroundColor: Colors.white,
+                  child: CircularProgressIndicator(
+                    color: primaryColor,
+                  ),
                 )
               : uploadImage != null
-                  ? Image.file(File(uploadImage!.path))
+                  ? CircleAvatar(
+                      radius: 150,
+                      child: Image.file(
+                        File(uploadImage!.path),
+                        fit: BoxFit.cover,
+                      ),
+                    )
                   : userDetails!['image'] != ''
-                      ? Image.network(userDetails!['image'])
-                      : Image.asset('assets/images/default.png'),
+                      ? CircleAvatar(
+                        backgroundColor: primaryColor,
+                          radius: 150,
+                          child: ClipRRect(
+                            borderRadius:BorderRadius.circular(30),
+                            child: Image.network(
+                              userDetails!['image'],
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        )
+                      : CircleAvatar(
+                         backgroundColor: primaryColor,
+                          radius: 150,
+                          child: Image.asset(
+                            'assets/images/default.png',
+                            fit: BoxFit.cover,
+                          ),
+                        ),
         ),
         ElevatedButton.icon(
           style: ElevatedButton.styleFrom(

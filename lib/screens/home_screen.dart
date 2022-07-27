@@ -98,18 +98,22 @@ class _HomeScreenState extends State<HomeScreen> {
                 ProfileScreen.routeName,
               ),
               child: _isLoading
-                  ? const CircularProgressIndicator(
-                      color: accentColor,
+                  ? const CircleAvatar(
+                      backgroundColor: primaryColor,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: accentColor,
+                      ),
                     )
                   : userDetails['image'] == ''
-                      ? ClipRRect(
-                          borderRadius: BorderRadius.circular(30),
-                          child: Image.asset(
+                      ? const CircleAvatar(
+                          backgroundImage: AssetImage(
                             'assets/images/default.png',
-                            width: 40,
                           ),
                         )
-                      : Image.network(userDetails['image']),
+                      : CircleAvatar(
+                          backgroundImage: NetworkImage(userDetails['image']),
+                        ),
             ),
           )
         ],

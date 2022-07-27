@@ -266,19 +266,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
               top: 65,
               left: 30,
               right: 30,
-              child: Container(
-                height:60,
-                width:60,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: userDetails!['image'] != ''
-                      ? DecorationImage(
-                          image: NetworkImage(userDetails!['image']),
-                        )
-                      : const DecorationImage(
-                          image: AssetImage('assets/images/default.png'),
-                        ),
-                ),
+              child: SizedBox(
+                height: 120,
+                width: 120,
+                child: userDetails!['image'] != ''
+                    ? CircleAvatar(
+                        radius: 120,
+                        backgroundColor: primaryColor,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(30),
+                          child: Image.network(userDetails!['image'])),
+                      )
+                    : CircleAvatar(
+                        child: Image.asset('assets/images/default.png'),
+                      ),
               ),
             )
           ]
