@@ -112,6 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         )
                       : CircleAvatar(
+                          backgroundColor: primaryColor,
                           backgroundImage: NetworkImage(userDetails['image']),
                         ),
             ),

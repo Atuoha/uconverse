@@ -275,9 +275,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         backgroundColor: primaryColor,
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(30),
-                          child: Image.network(userDetails!['image'])),
+                          child: Image.network(userDetails!['image']),
+                        ),
                       )
                     : CircleAvatar(
+                        backgroundColor: primaryColor,
                         child: Image.asset('assets/images/default.png'),
                       ),
               ),

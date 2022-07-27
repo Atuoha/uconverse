@@ -29,19 +29,19 @@ class SenderChat extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(
         top: 10,
-        left: 60,
+        left: 63,
         bottom: 10,
       ),
       child: Row(
-        // CrossAxisSize: MainAxisSize.max,
         children: [
           CircleAvatar(
-            radius: 17,
+            radius: 20,
             backgroundColor: primaryColor,
             child: imageAsset.isNotEmpty
                 ? ClipRRect(
-                  borderRadius: BorderRadius.circular(35),
-                  child: Image.network(imageAsset))
+                    borderRadius: BorderRadius.circular(35),
+                    child: Image.network(imageAsset),
+                  )
                 : Image.asset('assets/images/default.png'),
           ),
           const SizedBox(width: 5),
@@ -51,34 +51,31 @@ class SenderChat extends StatelessWidget {
               color: Theme.of(context).colorScheme.secondary,
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(20),
-                // bottomLeft: Radius.circular(20),
               ),
             ),
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(10, 10, 29, 5),
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 5),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                    
-                    
+                      Text(
+                        username,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
                       Text(
                         chatTime.toString(),
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 11,
-                        ),
-                      ),
-                        const SizedBox(width: 10),
-                        Text(
-                        username,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ],
@@ -87,12 +84,13 @@ class SenderChat extends StatelessWidget {
                     height: 5,
                   ),
                   SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.60,
+                    width: MediaQuery.of(context).size.width * 0.66,
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
                           message,
+                          // textAlign: TextAlign.end,
                           style: const TextStyle(
                             color: Colors.white,
                           ),

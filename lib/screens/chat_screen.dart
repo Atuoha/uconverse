@@ -20,7 +20,7 @@ class _ChatScreenState extends State<ChatScreen> {
       .collection('chats/i9IFa7EAlYRZvzQkdUVQ/messages');
 
   final _textController = TextEditingController();
-  var _isInit = true;
+  final _isInit = true;
 
   @override
   void initState() {
@@ -65,16 +65,16 @@ class _ChatScreenState extends State<ChatScreen> {
         centerTitle: true,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+          children: const [
             CircleAvatar(
-              backgroundImage: AssetImage(
-                userData.findById(2).imageUrl,
+              backgroundImage: NetworkImage(
+                'https://firebasestorage.googleapis.com/v0/b/uconverse-c940b.appspot.com/o/user_images%2FhiYFC5gCM6YWLnBparp7vgNiR643.jpg?alt=media&token=f513fb78-725e-4245-87e2-773c199172e3',
               ),
             ),
-            const SizedBox(width: 10),
+            SizedBox(width: 10),
             Text(
-              userData.findById(2).name,
-              style: const TextStyle(
+              'Ujunwa Peace',
+              style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w500,
               ),
@@ -104,11 +104,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 ],
               ),
               alignment: Alignment.center,
-              child: const Icon(
-               Icons.chevron_left,
-               color:primaryColor
-                
-              ),
+              child: const Icon(Icons.chevron_left, color: primaryColor),
             ),
           ),
         ),

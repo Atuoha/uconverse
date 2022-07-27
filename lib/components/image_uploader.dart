@@ -158,18 +158,22 @@ class _ImageUploaderState extends State<ImageUploader> {
                 )
               : uploadImage != null
                   ? CircleAvatar(
+                      backgroundColor: primaryColor,
                       radius: 150,
-                      child: Image.file(
-                        File(uploadImage!.path),
-                        fit: BoxFit.cover,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(30),
+                        child: Image.file(
+                          File(uploadImage!.path),
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     )
                   : userDetails!['image'] != ''
                       ? CircleAvatar(
-                        backgroundColor: primaryColor,
+                          backgroundColor: primaryColor,
                           radius: 150,
                           child: ClipRRect(
-                            borderRadius:BorderRadius.circular(30),
+                            borderRadius: BorderRadius.circular(30),
                             child: Image.network(
                               userDetails!['image'],
                               fit: BoxFit.cover,
@@ -177,7 +181,7 @@ class _ImageUploaderState extends State<ImageUploader> {
                           ),
                         )
                       : CircleAvatar(
-                         backgroundColor: primaryColor,
+                          backgroundColor: primaryColor,
                           radius: 150,
                           child: Image.asset(
                             'assets/images/default.png',

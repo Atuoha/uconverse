@@ -33,7 +33,7 @@ class SplashContainer extends StatelessWidget {
         mainAxisSize: MainAxisSize.max,
         children: [
           Expanded(
-            flex:6,
+            flex: 6,
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -56,7 +56,6 @@ class SplashContainer extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 10),
-          
                   isLast
                       ? ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(
@@ -99,7 +98,7 @@ class SplashContainer extends StatelessWidget {
           ),
           isFirst
               ? Expanded(
-                child: Padding(
+                  child: Padding(
                     padding: const EdgeInsets.only(top: 20.0),
                     child: Align(
                       alignment: Alignment.bottomLeft,
@@ -122,7 +121,7 @@ class SplashContainer extends StatelessWidget {
                       ),
                     ),
                   ),
-              )
+                )
               : isLast
                   ? const Text('')
                   : Padding(

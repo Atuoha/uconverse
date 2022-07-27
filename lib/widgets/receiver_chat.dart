@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:uconverse/constants/color.dart';
 
 class ReceiverChat extends StatelessWidget {
   final String message;
@@ -38,21 +39,32 @@ class ReceiverChat extends StatelessWidget {
             decoration: BoxDecoration(
               color: Theme.of(context).primaryColor.withOpacity(0.1),
               borderRadius: const BorderRadius.only(
-                // bottomRight: Radius.circular(20),
                 topRight: Radius.circular(20),
               ),
             ),
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(10, 10, 20, 5),
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 5),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    chatTime.toString(),
-                    style: const TextStyle(
-                      color: Colors.grey,
-                      fontSize: 12,
-                    ),
+                  Row(
+                    children: [
+                      Text(
+                        chatTime.toString(),
+                        style: const TextStyle(
+                          color: Colors.grey,
+                          fontSize: 11,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        username,
+                        style: const TextStyle(
+                          color: Colors.blueGrey,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(
                     height: 5,
@@ -62,12 +74,10 @@ class ReceiverChat extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(username),
                         Text(
                           message,
                           style: const TextStyle(
                             color: Colors.blueGrey,
-                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ],
@@ -81,9 +91,13 @@ class ReceiverChat extends StatelessWidget {
             width: 5,
           ),
           CircleAvatar(
+            backgroundColor: primaryColor,
             radius: 20,
-            child: imageAsset.isEmpty
-                ? Image.network(imageAsset)
+            child: imageAsset.isNotEmpty
+                ? ClipRRect(
+                    borderRadius: BorderRadius.circular(35),
+                    child: Image.network(imageAsset),
+                  )
                 : Image.asset('assets/images/default.png'),
           ),
         ],

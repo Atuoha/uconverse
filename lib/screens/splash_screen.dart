@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:liquid_swipe/liquid_swipe.dart';
 import 'package:flutter/services.dart';
-
 import '../components/splash_container.dart';
 import '../constants/color.dart';
 
@@ -36,7 +35,6 @@ class SplashScreenState extends State<SplashScreen> {
       imageAsset: 'assets/images/slider4.png',
       backgroundColor: primaryColor,
       textColor: Colors.white,
-
     ),
     const SplashContainer(
       title: 'Grow outside your space',
@@ -44,7 +42,6 @@ class SplashScreenState extends State<SplashScreen> {
       imageAsset: 'assets/images/slider2.png',
       backgroundColor: buttonColor,
       textColor: Colors.white,
-
     ),
     const SplashContainer(
       title: 'Find new people',
@@ -53,7 +50,7 @@ class SplashScreenState extends State<SplashScreen> {
       backgroundColor: accentColor,
       textColor: Colors.white,
     ),
-      const SplashContainer(
+    const SplashContainer(
       title: 'An Open World',
       subtitle: 'a place you\'ll feel more connected with people',
       imageAsset: 'assets/images/quick.png',

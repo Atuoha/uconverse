@@ -44,7 +44,7 @@ class HomeChats extends StatelessWidget {
                         snapshot.data!.docs[index];
                     DateTime toDate(time) {
                       return DateTime.fromMicrosecondsSinceEpoch(
-                          time.microsecondsSinceEpoch);
+                          time.microsecondsSinceEpoch,);
                     }
 
                     var date = toDate(documentSnapshot['createdAt']);
