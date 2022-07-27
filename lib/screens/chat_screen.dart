@@ -20,8 +20,7 @@ class _ChatScreenState extends State<ChatScreen> {
       .collection('chats/i9IFa7EAlYRZvzQkdUVQ/messages');
 
   final _textController = TextEditingController();
-  
-                                 
+  var _isInit = true;
 
   @override
   void initState() {
@@ -32,17 +31,20 @@ class _ChatScreenState extends State<ChatScreen> {
     });
   }
 
-  void sendChat() async{
+  void sendChat() async {
     FocusScope.of(context).unfocus(); // closing the keyboard
     var chat = _textController.text.trim();
-    final user =  FirebaseAuth.instance.currentUser;
-  final userData = await FirebaseFirestore.instance.collection('users').doc(user!.uid).get();
+    var user = FirebaseAuth.instance.currentUser;
+    var userDetails = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user!.uid)
+        .get();
     if (chat.isNotEmpty) {
       _chats.add({
         'msg': chat,
         'userId': user.uid,
         'createdAt': Timestamp.now(),
-        'username': userData['username']
+        'username': userDetails['username']
       });
       _textController.clear();
     }
@@ -83,27 +85,28 @@ class _ChatScreenState extends State<ChatScreen> {
             horizontal: 15.0,
             vertical: 5,
           ),
-          child: Container(
-            height: 10,
-            width: 10,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.white60,
-                  blurStyle: BlurStyle.inner,
-                  blurRadius: 20.0,
-                  spreadRadius: 7,
-                )
-              ],
-            ),
-            alignment: Alignment.center,
-            child: Text(
-              '3',
-              style: TextStyle(
-                color: Theme.of(context).primaryColor,
-                fontWeight: FontWeight.bold,
+          child: InkWell(
+            onTap: () => Navigator.of(context).pop(),
+            child: Container(
+              height: 10,
+              width: 10,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.white60,
+                    blurStyle: BlurStyle.inner,
+                    blurRadius: 20.0,
+                    spreadRadius: 7,
+                  )
+                ],
+              ),
+              alignment: Alignment.center,
+              child: const Icon(
+               Icons.chevron_left,
+               color:primaryColor
+                
               ),
             ),
           ),
@@ -154,13 +157,13 @@ class _ChatScreenState extends State<ChatScreen> {
                               final DocumentSnapshot documentSnapshot =
                                   snapshot.data!.docs[index];
 
-                              
-                              
-
-                              return documentSnapshot['userId'] == FirebaseAuth.instance.currentUser!.uid
+                              return documentSnapshot['userId'] ==
+                                      FirebaseAuth.instance.currentUser!.uid
                                   ? SenderChat(
                                       message: documentSnapshot['msg'],
                                       time: documentSnapshot['createdAt'],
+                                      username: documentSnapshot['username'],
+                                      imageAsset: documentSnapshot['image'],
                                     )
                                   : ReceiverChat(
                                       message: documentSnapshot['msg'],

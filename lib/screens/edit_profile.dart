@@ -8,6 +8,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:uconverse/components/image_uploader.dart';
 import 'package:uconverse/constants/color.dart';
 
+import 'profile_screen.dart';
+
 class EditProfile extends StatefulWidget {
   static const routeName = 'edit-profile';
   const EditProfile({Key? key}) : super(key: key);
@@ -43,6 +45,8 @@ class _EditProfileState extends State<EditProfile> {
     setState(
       () {
         _isLoading = false;
+        _emailController.text =userDetails['email'];
+        _usernameController.text = userDetails['username'];
       },
     );
   }
@@ -114,13 +118,13 @@ class _EditProfileState extends State<EditProfile> {
         'email': _emailController.text.trim(),
         'image': downloadLink,
         'login-mode': 'email',
-      });
+      }).then(
+          (value) => Navigator.of(context).pushNamed(ProfileScreen.routeName));
     } on FirebaseException catch (e) {
       showSnackBar('Error occurred! ${e.message}');
     } catch (e) {
       showSnackBar('Error occurred! $e');
     }
-    // Navigator.of(context).pushNamed(ProfileScreen.routeName);
   }
 
   @override
@@ -181,17 +185,12 @@ class _EditProfileState extends State<EditProfile> {
                   child: Column(
                     children: [
                       TextFormField(
-                        // initialValue: userDetails!['username'],
                         textInputAction: TextInputAction.next,
                         autofocus: true,
                         controller: _usernameController,
                         decoration: InputDecoration(
-                          hintText: userDetails == null
-                              ? ''
-                              : userDetails!['username'],
-                          labelText: userDetails == null
-                              ? ''
-                              : userDetails!['username'],
+                          hintText: userDetails!['username'],
+                          labelText: 'Username',
                           icon: const Icon(Icons.account_box),
                         ),
                         validator: (value) {
@@ -205,16 +204,13 @@ class _EditProfileState extends State<EditProfile> {
                       ),
                       const SizedBox(height: 20),
                       TextFormField(
-                        // initialValue: userDetails!['email'],
                         textInputAction: TextInputAction.next,
                         autofocus: true,
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
-                          hintText:
-                              userDetails == null ? '' : userDetails!['email'],
-                          labelText:
-                              userDetails == null ? '' : userDetails!['email'],
+                          hintText: userDetails!['email'],
+                          labelText: 'Email',
                           icon: const Icon(
                             Icons.email,
                           ),

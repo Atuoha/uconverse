@@ -62,12 +62,6 @@ class ReceiverChat extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CircleAvatar(
-                          radius:20,
-                          child: imageAsset.isEmpty
-                              ? Image.network(imageAsset)
-                              : Image.asset('assets/images/default.png'),
-                        ),
                         Text(username),
                         Text(
                           message,
@@ -86,10 +80,12 @@ class ReceiverChat extends StatelessWidget {
           const SizedBox(
             width: 15,
           ),
-          // Icon(
-          //   message.isLiked ? Icons.favorite : Icons.favorite_border,
-          //   color: message.isLiked ? Colors.red : Colors.grey,
-          // )
+          CircleAvatar(
+            radius: 20,
+            child: imageAsset.isEmpty
+                ? Image.network(imageAsset)
+                : Image.asset('assets/images/default.png'),
+          ),
         ],
       ),
     );
