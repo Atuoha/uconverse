@@ -7,6 +7,8 @@
 
              <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
             <meta-data android:name="com.facebook.sdk.ClientToken" android:value="@string/facebook_client_token"/>
+            <meta-data android:name="firebase_messaging_auto_init_enabled" android:value="false" />
+            <meta-data android:name="firebase_analytics_collection_enabled" android:value="false" />
 
        
 
