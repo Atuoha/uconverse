@@ -3,8 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../widgets/sender_chat.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../providers/providers.dart';
 import '../widgets/receiver_chat.dart';
 import '../constants/color.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
@@ -32,7 +30,7 @@ class _ChatScreenState extends State<ChatScreen> {
     });
   }
 
-  bool emojiShowing = false;
+  bool _emojiShowing = false;
 
   _onEmojiSelected(Emoji emoji) {
     _textController
@@ -56,6 +54,9 @@ class _ChatScreenState extends State<ChatScreen> {
 
   void sendChat() async {
     FocusScope.of(context).unfocus(); // closing the keyboard
+    setState(() {
+      _emojiShowing = false;  // toggling off emoji
+    });
     var chat = _textController.text.trim();
     var user = FirebaseAuth.instance.currentUser;
     var userDetails = await FirebaseFirestore.instance
@@ -77,9 +78,6 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // var msgData = Provider.of<MessageData>(context);
-    // var userData = Provider.of<UserData>(context);
-
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
@@ -227,7 +225,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                   ),
                                   onPressed: () {
                                     setState(() {
-                                      emojiShowing = !emojiShowing;
+                                      _emojiShowing = !_emojiShowing;
                                     });
                                   },
                                 ),
@@ -244,6 +242,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               child: Padding(
                                 padding: const EdgeInsets.only(left: 8.0),
                                 child: TextField(
+                                  textInputAction: TextInputAction.done,
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 16,
@@ -252,10 +251,6 @@ class _ChatScreenState extends State<ChatScreen> {
                                   decoration: const InputDecoration(
                                     hintText: 'Type your message here...',
                                     hintStyle: TextStyle(color: Colors.white),
-                                    // icon: Icon(
-                                    //   Icons.emoji_emotions_outlined,
-                                    //   color: Colors.white,
-                                    // ),
                                     suffixIcon: Icon(
                                       Icons.attach_file,
                                       color: Colors.white,
@@ -292,7 +287,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                 ),
                 Visibility(
-                  visible: !emojiShowing,
+                  visible: _emojiShowing,
                   child: SizedBox(
                     height: 250,
                     child: EmojiPicker(
