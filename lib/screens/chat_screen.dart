@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../widgets/sender_chat.dart';
@@ -6,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../providers/providers.dart';
 import '../widgets/receiver_chat.dart';
 import '../constants/color.dart';
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({Key? key}) : super(key: key);
@@ -20,7 +22,6 @@ class _ChatScreenState extends State<ChatScreen> {
       .collection('chats/i9IFa7EAlYRZvzQkdUVQ/messages');
 
   final _textController = TextEditingController();
-  final _isInit = true;
 
   @override
   void initState() {
@@ -29,6 +30,28 @@ class _ChatScreenState extends State<ChatScreen> {
     _textController.addListener(() {
       setState(() {});
     });
+  }
+
+  bool emojiShowing = false;
+
+  _onEmojiSelected(Emoji emoji) {
+    _textController
+      ..text += emoji.emoji
+      ..selection = TextSelection.fromPosition(
+        TextPosition(
+          offset: _textController.text.length,
+        ),
+      );
+  }
+
+  _onBackspacePressed() {
+    _textController
+      ..text = _textController.text.characters.skipLast(1).toString()
+      ..selection = TextSelection.fromPosition(
+        TextPosition(
+          offset: _textController.text.length,
+        ),
+      );
   }
 
   void sendChat() async {
@@ -55,7 +78,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     // var msgData = Provider.of<MessageData>(context);
-    var userData = Provider.of<UserData>(context);
+    // var userData = Provider.of<UserData>(context);
 
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
@@ -66,14 +89,14 @@ class _ChatScreenState extends State<ChatScreen> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: const [
-            CircleAvatar(
-              backgroundImage: NetworkImage(
-                'https://firebasestorage.googleapis.com/v0/b/uconverse-c940b.appspot.com/o/user_images%2FhiYFC5gCM6YWLnBparp7vgNiR643.jpg?alt=media&token=f513fb78-725e-4245-87e2-773c199172e3',
-              ),
-            ),
+            // CircleAvatar(
+            //   backgroundImage: NetworkImage(
+            //     'https://firebasestorage.googleapis.com/v0/b/uconverse-c940b.appspot.com/o/user_images%2FhiYFC5gCM6YWLnBparp7vgNiR643.jpg?alt=media&token=f513fb78-725e-4245-87e2-773c199172e3',
+            //   ),
+            // ),
             SizedBox(width: 10),
             Text(
-              'Ujunwa Peace',
+              'Conversations',
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w500,
@@ -188,7 +211,29 @@ class _ChatScreenState extends State<ChatScreen> {
                       padding: const EdgeInsets.all(10.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
+                          //
+                          Expanded(
+                            flex: 1,
+                            child: CircleAvatar(
+                              backgroundColor: accentColor,
+                              child: Center(
+                                child: IconButton(
+                                  icon: const Icon(
+                                    Icons.emoji_emotions,
+                                    size: 25,
+                                    color: Colors.white,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      emojiShowing = !emojiShowing;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
                           Expanded(
                             flex: 6,
                             child: Container(
@@ -207,10 +252,10 @@ class _ChatScreenState extends State<ChatScreen> {
                                   decoration: const InputDecoration(
                                     hintText: 'Type your message here...',
                                     hintStyle: TextStyle(color: Colors.white),
-                                    icon: Icon(
-                                      Icons.emoji_emotions_outlined,
-                                      color: Colors.white,
-                                    ),
+                                    // icon: Icon(
+                                    //   Icons.emoji_emotions_outlined,
+                                    //   color: Colors.white,
+                                    // ),
                                     suffixIcon: Icon(
                                       Icons.attach_file,
                                       color: Colors.white,
@@ -245,7 +290,50 @@ class _ChatScreenState extends State<ChatScreen> {
                       ),
                     ),
                   ),
-                )
+                ),
+                Visibility(
+                  visible: !emojiShowing,
+                  child: SizedBox(
+                    height: 250,
+                    child: EmojiPicker(
+                      onEmojiSelected: (Category category, Emoji emoji) {
+                        _onEmojiSelected(emoji);
+                      },
+                      onBackspacePressed: _onBackspacePressed,
+                      config: Config(
+                        columns: 7,
+                        emojiSizeMax: 32 * (Platform.isIOS ? 1.30 : 1.0),
+                        verticalSpacing: 0,
+                        horizontalSpacing: 0,
+                        gridPadding: EdgeInsets.zero,
+                        initCategory: Category.RECENT,
+                        bgColor: const Color(0xFFF2F2F2),
+                        indicatorColor: primaryColor,
+                        iconColor: Colors.grey,
+                        iconColorSelected: primaryColor,
+                        progressIndicatorColor: primaryColor,
+                        backspaceColor: primaryColor,
+                        skinToneDialogBgColor: Colors.white,
+                        skinToneIndicatorColor: Colors.grey,
+                        enableSkinTones: true,
+                        showRecentsTab: true,
+                        recentsLimit: 28,
+                        replaceEmojiOnLimitExceed: false,
+                        noRecents: const Text(
+                          'No Recents',
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.black26,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        tabIndicatorAnimDuration: kTabScrollDuration,
+                        categoryIcons: const CategoryIcons(),
+                        buttonMode: ButtonMode.MATERIAL,
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

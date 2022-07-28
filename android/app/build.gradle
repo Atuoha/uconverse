@@ -24,7 +24,6 @@ if (flutterVersionName == null) {
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'com.google.gms.google-services'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
@@ -75,3 +74,4 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.facebook.android:facebook-android-sdk:latest.release'
 }
+apply plugin: 'com.google.gms.google-services'

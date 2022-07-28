@@ -29,7 +29,7 @@ class SenderChat extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(
         top: 10,
-        left: 63,
+        left: 57,
         bottom: 10,
       ),
       child: Row(
