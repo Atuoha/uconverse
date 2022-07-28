@@ -302,7 +302,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       onBackspacePressed: _onBackspacePressed,
                       config: Config(
                         columns: 7,
-                        emojiSizeMax: 32 * (Platform.isIOS ? 1.30 : 1.0),
+                        emojiSizeMax: 28 * (Platform.isIOS ? 1.30 : 1.0),
                         verticalSpacing: 0,
                         horizontalSpacing: 0,
                         gridPadding: EdgeInsets.zero,
