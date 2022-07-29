@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import '/constants/color.dart';
 import '../widgets/favorite_contacts.dart';
 import '../widgets/home_chats.dart';
@@ -38,6 +39,19 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() async {
     super.initState();
     FirebaseMessaging message = FirebaseMessaging.instance;
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      if (kDebugMode) {
+        print('message');
+      }
+      
+    });
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      if (kDebugMode) {
+        print('Message clicked!');
+      }
+    });
+
+  
     NotificationSettings settings = await message.requestPermission(
       alert: true,
       announcement: false,
@@ -47,6 +61,9 @@ class _HomeScreenState extends State<HomeScreen> {
       provisional: false,
       sound: true,
     );
+    if (kDebugMode) {
+      print('User granted ${settings.authorizationStatus}');
+    }
   }
 
   @override
