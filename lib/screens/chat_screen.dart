@@ -24,7 +24,6 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
-
     _textController.addListener(() {
       setState(() {});
     });
@@ -55,7 +54,7 @@ class _ChatScreenState extends State<ChatScreen> {
   void sendChat() async {
     FocusScope.of(context).unfocus(); // closing the keyboard
     setState(() {
-      _emojiShowing = false;  // toggling off emoji
+      _emojiShowing = false; // toggling off emoji
     });
     var chat = _textController.text.trim();
     var user = FirebaseAuth.instance.currentUser;

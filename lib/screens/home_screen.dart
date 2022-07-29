@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import '/constants/color.dart';
 import '../widgets/favorite_contacts.dart';
 import '../widgets/home_chats.dart';
@@ -34,8 +35,18 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
-  void initState() {
+  void initState() async {
     super.initState();
+    FirebaseMessaging message = FirebaseMessaging.instance;
+    NotificationSettings settings = await message.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
   }
 
   @override
