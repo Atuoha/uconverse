@@ -241,6 +241,9 @@ class _ChatScreenState extends State<ChatScreen> {
                               child: Padding(
                                 padding: const EdgeInsets.only(left: 8.0),
                                 child: TextField(
+                                  enableSuggestions: true,
+                                  autocorrect: true,
+                                  textCapitalization: TextCapitalization.sentences,
                                   textInputAction: TextInputAction.done,
                                   style: const TextStyle(
                                     color: Colors.white,

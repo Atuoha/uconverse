@@ -369,6 +369,9 @@ class _AuthScreenState extends State<AuthScreen> {
                               ),
                             ),
                             TextFormField(
+                              enableSuggestions: false,
+                                  autocorrect: false,
+                                  textCapitalization: TextCapitalization.none,
                               textInputAction: TextInputAction.next,
                               autofocus: isSignIn ? true : false,
                               controller: _emailController,
@@ -390,6 +393,9 @@ class _AuthScreenState extends State<AuthScreen> {
                             SizedBox(height: isSignIn ? 0 : 20),
                             !isSignIn
                                 ? TextFormField(
+                                  enableSuggestions: true,
+                                  autocorrect: true,
+                                  textCapitalization: TextCapitalization.words,
                                     textInputAction: TextInputAction.next,
                                     autofocus: true,
                                     controller: _usernameController,

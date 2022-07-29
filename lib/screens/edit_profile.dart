@@ -45,7 +45,7 @@ class _EditProfileState extends State<EditProfile> {
     setState(
       () {
         _isLoading = false;
-        _emailController.text =userDetails['email'];
+        _emailController.text = userDetails['email'];
         _usernameController.text = userDetails['username'];
       },
     );
@@ -204,6 +204,9 @@ class _EditProfileState extends State<EditProfile> {
                       ),
                       const SizedBox(height: 20),
                       TextFormField(
+                        enableSuggestions: false,
+                        autocorrect: false,
+                        textCapitalization: TextCapitalization.none,
                         textInputAction: TextInputAction.next,
                         autofocus: true,
                         controller: _emailController,
@@ -224,6 +227,9 @@ class _EditProfileState extends State<EditProfile> {
                       ),
                       const SizedBox(height: 20),
                       TextFormField(
+                        enableSuggestions: true,
+                        autocorrect: true,
+                        textCapitalization: TextCapitalization.sentences,
                         onFieldSubmitted: (value) {},
                         obscureText: obscure,
                         textInputAction: TextInputAction.done,
