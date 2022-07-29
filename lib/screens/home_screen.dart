@@ -43,7 +43,6 @@ class _HomeScreenState extends State<HomeScreen> {
       if (kDebugMode) {
         print('message');
       }
-      
     });
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
       if (kDebugMode) {
@@ -51,7 +50,8 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     });
 
-  
+    message.subscribeToTopic('chat');
+
     NotificationSettings settings = await message.requestPermission(
       alert: true,
       announcement: false,
